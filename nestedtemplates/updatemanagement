@@ -1,0 +1,474 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentName": {
+            "type": "String"
+        },
+        "workspaceSubscriptionId": {
+            "type": "String"
+        },
+        "workspaceResourceGroupName": {
+            "type": "String"
+        },
+        "workspaceName": {
+            "type": "String"
+        },
+        "accountName": {
+            "type": "String"
+        },
+        "accountResourceId": {
+            "type": "String"
+        },
+        "workspaceLocation": {
+            "type": "String"
+        },
+        "accountSubscriptionId": {
+            "type": "String"
+        },
+        "accountResourceGroupName": {
+            "type": "String"
+        },
+        "accountLocation": {
+            "type": "String"
+        },
+        "workspaceSku": {
+            "type": "String"
+        },
+        "workspaceSearchVersion": {
+            "type": "String"
+        },
+        "accountSku": {
+            "type": "String"
+        },
+        "vmResourceGroupName": {
+            "type": "String"
+        },
+        "vmName": {
+            "type": "String"
+        },
+        "vmLocation": {
+            "type": "String"
+        },
+        "vmResourceId": {
+            "type": "String"
+        },
+        "vmIdentityRequired": {
+            "defaultValue": "false",
+            "type": "Bool"
+        },
+        "workspaceResourceId": {
+            "type": "String"
+        },
+        "mmaExtensionName": {
+            "defaultValue": "",
+            "type": "String"
+        },
+        "computerGroupQueryId": {
+            "type": "String"
+        },
+        "computerGroupQueryResourceName": {
+            "type": "String"
+        },
+        "computerGroupQueryCategory": {
+            "type": "String"
+        },
+        "computerGroupQueryDisplayName": {
+            "type": "String"
+        },
+        "computerGroupQueryQuery": {
+            "type": "String"
+        },
+        "computerGroupQueryFunctionAlias": {
+            "type": "String"
+        },
+        "computerGroupQueryEtag": {
+            "type": "String"
+        },
+        "scopeConfigurationId": {
+            "type": "String"
+        },
+        "scopeConfigurationResourceName": {
+            "type": "String"
+        },
+        "scopeConfigurationKind": {
+            "type": "String"
+        },
+        "scopeConfigurationInclude": {
+            "type": "Array"
+        },
+        "scopeConfigurationEtag": {
+            "type": "String"
+        },
+        "solutionType": {
+            "type": "String"
+        },
+        "scopeConfigurationName": {
+            "type": "String"
+        },
+        "dscRefreshFrequencyMins": {
+            "type": "String"
+        },
+        "dscConfigurationModeFrequencyMins": {
+            "type": "String"
+        },
+        "dscConfigurationMode": {
+            "type": "String"
+        },
+        "dscActionAfterReboot": {
+            "type": "String"
+        },
+        "dscRebootNodeifNeeded": {
+            "type": "Bool"
+        },
+        "dscAllowModuleOverride": {
+            "type": "Bool"
+        },
+        "accountTemplateLinkUri": {
+            "type": "String"
+        },
+        "linkTemplateLinkUri": {
+            "type": "String"
+        },
+        "mmaTemplateLinkUri": {
+            "type": "String"
+        },
+        "solutionTemplateLinkUri": {
+            "type": "String"
+        },
+        "computerGroupQueryTemplateLinkUri": {
+            "type": "String"
+        },
+        "scopeConfigurationTemplateLinkUri": {
+            "type": "String"
+        },
+        "dscTemplateLinkUri": {
+            "type": "String"
+        },
+        "dscSecurityBaselineType": {
+            "type": "String"
+        },
+        "changeTrackingSettingsTemplateLinkUri": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "name": "[parameters('workspaceName')]",
+            "apiVersion": "2017-03-15-preview",
+            "location": "[parameters('workspaceLocation')]",
+            "properties": {
+                "sku": {
+                    "name": "[parameters('workspaceSku')]"
+                },
+                "features": {
+                    "searchVersion": "[parameters('workspaceSearchVersion')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('deploymentName'), '.account')]",
+            "apiVersion": "2017-05-10",
+            "subscriptionId": "[parameters('accountSubscriptionId')]",
+            "resourceGroup": "[parameters('accountResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('accountTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "accountName": {
+                        "value": "[parameters('accountName')]"
+                    },
+                    "accountLocation": {
+                        "value": "[parameters('accountLocation')]"
+                    },
+                    "accountSku": {
+                        "value": "[parameters('accountSku')]"
+                    },
+                    "workspaceResourceId": {
+                        "value": "[parameters('workspaceResourceId')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('deploymentName'), '.link')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('workspaceResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('linkTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "workspaceLocation": {
+                        "value": "[parameters('workspaceLocation')]"
+                    },
+                    "accountResourceId": {
+                        "value": "[parameters('accountResourceId')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('deploymentName'), '.account')]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('deploymentName'), '.mma')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('vmResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('mmaTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vmName": {
+                        "value": "[parameters('vmName')]"
+                    },
+                    "vmLocation": {
+                        "value": "[parameters('vmLocation')]"
+                    },
+                    "vmResourceId": {
+                        "value": "[parameters('vmResourceId')]"
+                    },
+                    "vmIdentityRequired": {
+                        "value": "[parameters('vmIdentityRequired')]"
+                    },
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "workspaceId": {
+                        "value": "[reference(parameters('workspaceResourceId')).customerId]"
+                    },
+                    "workspaceResourceId": {
+                        "value": "[parameters('workspaceResourceId')]"
+                    },
+                    "mmaExtensionName": {
+                        "value": "[parameters('mmaExtensionName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('deploymentName'), '.computerGroupQuery')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('workspaceResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('computerGroupQueryTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('workspaceLocation')]"
+                    },
+                    "id": {
+                        "value": "[parameters('computerGroupQueryId')]"
+                    },
+                    "resourceName": {
+                        "value": "[parameters('computerGroupQueryResourceName')]"
+                    },
+                    "category": {
+                        "value": "[parameters('computerGroupQueryCategory')]"
+                    },
+                    "displayName": {
+                        "value": "[parameters('computerGroupQueryDisplayName')]"
+                    },
+                    "query": {
+                        "value": "[parameters('computerGroupQueryQuery')]"
+                    },
+                    "functionAlias": {
+                        "value": "[parameters('computerGroupQueryFunctionAlias')]"
+                    },
+                    "etag": {
+                        "value": "[parameters('computerGroupQueryEtag')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('deploymentName'), '.scopeConfiguration')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('workspaceResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('scopeConfigurationTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('workspaceLocation')]"
+                    },
+                    "id": {
+                        "value": "[parameters('scopeConfigurationId')]"
+                    },
+                    "resourceName": {
+                        "value": "[parameters('scopeConfigurationResourceName')]"
+                    },
+                    "kind": {
+                        "value": "[parameters('scopeConfigurationKind')]"
+                    },
+                    "include": {
+                        "value": "[parameters('scopeConfigurationInclude')]"
+                    },
+                    "etag": {
+                        "value": "[parameters('scopeConfigurationEtag')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('deploymentName'), '.computerGroupQuery')]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('deploymentName'), '.solution')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('workspaceResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('solutionTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "subscriptionId": {
+                        "value": "[parameters('workspaceSubscriptionId')]"
+                    },
+                    "resourcegroupName": {
+                        "value": "[parameters('workspaceResourceGroupName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('workspaceLocation')]"
+                    },
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "solutionType": {
+                        "value": "[parameters('solutionType')]"
+                    },
+                    "scopeConfigurationName": {
+                        "value": "[parameters('scopeConfigurationName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('deploymentName'), '.scopeConfiguration')]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('deploymentName'), '.changeTrackingSettings')]",
+            "apiVersion": "2017-05-10",
+            "subscriptionId": "[parameters('workspaceSubscriptionId')]",
+            "resourceGroup": "[parameters('workspaceResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('changeTrackingSettingsTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceLocation": {
+                        "value": "[parameters('workspaceLocation')]"
+                    },
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('deploymentName'), '.solution')]"
+            ],
+            "condition": "[or(equals(parameters('solutionType'), 'ChangeTracking'), equals(parameters('solutionType'), 'Inventory'))]"
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(parameters('deploymentName'), '.dsc')]",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[parameters('vmResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('dscTemplateLinkUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "AccountResourceId": {
+                        "value": "[parameters('accountResourceId')]"
+                    },
+                    "RegistrationUrl": {
+                        "value": "[reference(concat(parameters('deploymentName'), '.account')).outputs.AutomationAccountRegistrationUrl.value]"
+                    },
+                    "RefreshFrequencyMins": {
+                        "value": "[parameters('dscRefreshFrequencyMins')]"
+                    },
+                    "ConfigurationModeFrequencyMins": {
+                        "value": "[parameters('dscConfigurationModeFrequencyMins')]"
+                    },
+                    "ConfigurationMode": {
+                        "value": "[parameters('dscConfigurationMode')]"
+                    },
+                    "ActionAfterReboot": {
+                        "value": "[parameters('dscActionAfterReboot')]"
+                    },
+                    "vmName": {
+                        "value": "[parameters('vmName')]"
+                    },
+                    "vmLocation": {
+                        "value": "[parameters('vmLocation')]"
+                    },
+                    "RebootNodeifNeeded": {
+                        "value": "[parameters('dscRebootNodeifNeeded')]"
+                    },
+                    "AllowModuleOverwrite": {
+                        "value": "[parameters('dscAllowModuleOverride')]"
+                    },
+                    "AccountLocation": {
+                        "value": "[parameters('accountLocation')]"
+                    },
+                    "AutomationAccountName": {
+                        "value": "[parameters('accountName')]"
+                    },
+                    "AccountResourceGroup": {
+                        "value": "[parameters('accountResourceGroupName')]"
+                    },
+                    "deploymentName": {
+                        "value": "[parameters('deploymentName')]"
+                    },
+                    "dscSecurityBaselineType": {
+                        "value": "[parameters('dscSecurityBaselineType')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('deploymentName'), '.account')]"
+            ]
+        }
+    ]
+}
