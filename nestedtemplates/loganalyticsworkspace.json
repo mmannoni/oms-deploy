@@ -12,10 +12,7 @@
             "type": "string",
             "defaultValue": "West Europe",
             "allowedValues": [
-                "East US",
-                "West Europe",
-                "Southeast Asia",
-                "Australia Southeast"
+                "West Europe"
             ],
             "metadata": {
                 "description": "Specify the region for your Workspace"
@@ -26,20 +23,8 @@
         "batch1": {
             "solutions": [
                 {
-                    "name": "[concat('Security', '(', parameters('omsWorkspaceName'), ')')]",
-                    "marketplaceName": "Security"
-                },
-                {
-                    "name": "[concat('AgentHealthAssessment', '(', parameters('omsWorkspaceName'), ')')]",
-                    "marketplaceName": "AgentHealthAssessment"
-                },
-                {
                     "name": "[concat('ChangeTracking', '(', parameters('omsWorkspaceName'), ')')]",
                     "marketplaceName": "ChangeTracking"
-                },
-                {
-                    "name": "[concat('Updates', '(', parameters('omsWorkspaceName'), ')')]",
-                    "marketplaceName": "Updates"
                 },
                 {
                     "name": "[concat('AzureActivity', '(', parameters('omsWorkspaceName'), ')')]",
@@ -48,14 +33,6 @@
                 {
                     "name": "[concat('AzureAutomation', '(', parameters('omsWorkspaceName'), ')')]",
                     "marketplaceName": "AzureAutomation"
-                },
-                {
-                    "name": "[concat('ADAssessment', '(', parameters('omsWorkspaceName'), ')')]",
-                    "marketplaceName": "ADAssessment"
-                },
-                {
-                    "name": "[concat('SQLAssessment', '(', parameters('omsWorkspaceName'), ')')]",
-                    "marketplaceName": "SQLAssessment"
                 }
             ]
         }
@@ -87,48 +64,6 @@
                     }
                 },
                 {
-                    "apiVersion": "2017-03-15-preview",
-                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'HyperV1')]",
-                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "properties": {
-                        "ETag": "*",
-                        "category": "HyperV",
-                        "displayName": "VMs created last 24 hours",
-                        "query": "Event | where EventLog == \"Microsoft-Windows-Hyper-V-VMMS-Admin\" and EventID == 13003 and EventLevelName =~ \"information\" and TimeGenerated > ago(1d)"
-                    }
-                },
-                {
-                    "apiVersion": "2017-03-15-preview",
-                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'HyperV2')]",
-                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "properties": {
-                        "ETag": "*",
-                        "category": "HyperV",
-                        "displayName": "VMs deleted last 24 hours",
-                        "Query": "Event | where EventLog == \"Microsoft-Windows-Hyper-V-VMMS-Admin\" and EventID == 13003 and EventLevelName =~ \"information\" and TimeGenerated > ago(1d)"
-                    }
-                },
-                {
-                    "apiVersion": "2017-03-15-preview",
-                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'HyperV3')]",
-                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "properties": {
-                        "ETag": "*",
-                        "category": "HyperV",
-                        "displayName": "Replication throughput per VM over last 24 hours",
-                        "query": "Perf | where ObjectName == \"Hyper-V Azure Replication Agent\" and CounterName == \"Replication Throughput\" and TimeGenerated > ago(1d) | summarize AggregatedValue = avg(CounterValue) by InstanceName, bin(TimeGenerated, 15m)"
-                    }
-                },
-                {
                     "name": "[concat(parameters('omsWorkspaceName'), '/', 'SoftwareUpdateFailed1')]",
                     "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
                     "apiVersion": "2017-03-15-preview",
@@ -141,36 +76,6 @@
                         "category": "Software Updates",
                         "displayName": "Failed Software Updates in the last week",
                         "query": "Event | where EventID == 20 and Source == \"Microsoft-Windows-WindowsUpdateClient\" and EventLog == \"System\" and TimeGenerated > ago(7d)"
-                    }
-                },
-                {
-                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'Network1')]",
-                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-                    "apiVersion": "2017-03-15-preview",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "tags": {},
-                    "properties": {
-                        "ETag": "*",
-                        "category": "Networking",
-                        "displayName": "NICs disconnected from the network in last 24 hours",
-                        "query": "Event | where EventLog == \"System\" and Source == \"TCPIP\" and EventID == 4202 and TimeGenerated > ago(24h) | summarize AggregatedValue = count() by Computer"
-                    }
-                },
-                {
-                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'Network2')]",
-                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-                    "apiVersion": "2017-03-15-preview",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "tags": {},
-                    "properties": {
-                        "ETag": "*",
-                        "category": "Networking",
-                        "displayName": "Duplicate IP addresses detected in the last 24 hours",
-                        "query": "Event | where (EventID == 4198 or EventID == 4199) and Source == \"TCPIP\" and EventLog == \"System\" and TimeGenerated > ago(24h)"
                     }
                 },
                 {
@@ -489,111 +394,6 @@
                                 "eventType": "Information"
                             }
                         ]
-                    }
-                },
-                {
-                    "apiVersion": "2015-11-01-preview",
-                    "type": "datasources",
-                    "name": "Hyper-VAzureReplicationAgent1",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "kind": "WindowsPerformanceCounter",
-                    "properties": {
-                        "objectName": "Hyper-V Azure Replication Agent",
-                        "instanceName": "*",
-                        "intervalSeconds": 10,
-                        "counterName": "Average Replication Size"
-                    }
-                },
-                {
-                    "apiVersion": "2015-11-01-preview",
-                    "type": "datasources",
-                    "name": "Hyper-VAzureReplicationAgent2",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "kind": "WindowsPerformanceCounter",
-                    "properties": {
-                        "objectName": "Hyper-V Azure Replication Agent",
-                        "instanceName": "*",
-                        "intervalSeconds": 10,
-                        "counterName": "Replication Throughput"
-                    }
-                },
-                {
-                    "apiVersion": "2015-11-01-preview",
-                    "type": "datasources",
-                    "name": "Hyper-VAzureReplicationAgent3",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "kind": "WindowsPerformanceCounter",
-                    "properties": {
-                        "objectName": "Hyper-V Azure Replication Agent",
-                        "instanceName": "*",
-                        "intervalSeconds": 10,
-                        "counterName": "Network Send Throughput"
-                    }
-                },
-                {
-                    "apiVersion": "2015-11-01-preview",
-                    "type": "datasources",
-                    "name": "Hyper-VAzureReplicationAgent4",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "kind": "WindowsPerformanceCounter",
-                    "properties": {
-                        "objectName": "Hyper-V Azure Replication Agent",
-                        "instanceName": "*",
-                        "intervalSeconds": 10,
-                        "counterName": "Replication Count"
-                    }
-                },
-                {
-                    "apiVersion": "2015-11-01-preview",
-                    "type": "datasources",
-                    "name": "Hyper-VAzureReplicationAgent5",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "kind": "WindowsPerformanceCounter",
-                    "properties": {
-                        "objectName": "Hyper-V Azure Replication Agent",
-                        "instanceName": "*",
-                        "intervalSeconds": 10,
-                        "counterName": "Network Bytes Sent"
-                    }
-                },
-                {
-                    "apiVersion": "2015-11-01-preview",
-                    "type": "datasources",
-                    "name": "Hyper-VAzureReplicationAgent6",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "kind": "WindowsPerformanceCounter",
-                    "properties": {
-                        "objectName": "Hyper-V Azure Replication Agent",
-                        "instanceName": "*",
-                        "intervalSeconds": 10,
-                        "counterName": "Last Replication Size"
-                    }
-                },
-                {
-                    "apiVersion": "2015-11-01-preview",
-                    "type": "datasources",
-                    "name": "Hyper-VAzureReplicationAgent7",
-                    "dependsOn": [
-                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-                    ],
-                    "kind": "WindowsPerformanceCounter",
-                    "properties": {
-                        "objectName": "Hyper-V Azure Replication Agent",
-                        "instanceName": "*",
-                        "intervalSeconds": 10,
-                        "counterName": "Resynchronized Bytes"
                     }
                 },
                 {
