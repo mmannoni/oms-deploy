@@ -63,8 +63,8 @@
     },
     "variables": {
         "nestedTemplates": {
-            "omsAutomation": "[concat(parameters('_artifactsLocation'), '/nestedtemplates/omsAutomation.json', parameters('_artifactsLocationSasToken'))]",
-            "omsWorkspace": "[concat(parameters('_artifactsLocation'), '/nestedtemplates/omsWorkspace.json', parameters('_artifactsLocationSasToken'))]"
+            "omsAutomation": "[concat(parameters('_artifactsLocation'), '/nestedtemplates/automation.json', parameters('_artifactsLocationSasToken'))]",
+            "omsWorkspace": "[concat(parameters('_artifactsLocation'), '/nestedtemplates/loganalyticsorkspace.json', parameters('_artifactsLocationSasToken'))]"
         }
     },
     "resources": [
