@@ -142,14 +142,6 @@
           }
         },
         {
-          "name": "[variables('omsResourceGroupName')]",
-          "type": "variables",
-          "apiVersion": "2015-10-31",
-          "dependsOn": [
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
-          ]
-        },
-        {
           "name": "[variables('azureCredentials')]",
           "type": "credentials",
           "apiVersion": "2015-10-31",
@@ -162,14 +154,6 @@
             "password": "[parameters('azureAdminPwd')]",
             "userName": "[parameters('azureAdmin')]"
           }
-        },
-        {
-          "name": "[variables('omsWorkspaceNameAsset')]",
-          "type": "variables",
-          "apiVersion": "2015-10-31",
-          "dependsOn": [
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
-          ]
         },
         {
           "name": "[variables('psModules').azureRmOperationalInsights.name]",
@@ -275,6 +259,7 @@
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmResources.name)]",
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmCompute.name)]",
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureStorage.name)]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmStorage.name)]",
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmOperationalInsights.name)]"
           ],
           "tags": {},
