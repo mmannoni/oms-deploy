@@ -113,7 +113,9 @@
           "name": "[variables('omsWorkspaceId')]",
           "type": "variables",
           "apiVersion": "2015-10-31",
-          "dependsOn": [],
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+          ],
           "tags": {},
           "properties": {
             "description": "OMS Workspace Id",
@@ -124,7 +126,9 @@
           "name": "[variables('omsWorkspaceKey')]",
           "type": "variables",
           "apiVersion": "2015-10-31",
-          "dependsOn": [],
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+          ],
           "tags": {},
           "properties": {
             "description": "OMS Workspace key",
@@ -135,7 +139,9 @@
           "name": "[variables('azureSubscriptionId')]",
           "type": "variables",
           "apiVersion": "2015-10-31",
-          "dependsOn": [],
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+          ],
           "tags": {},
           "properties": {
             "description": "Azure Subscription Id",
@@ -148,7 +154,9 @@
           "name": "[variables('azureCredentials')]",
           "type": "credentials",
           "apiVersion": "2015-10-31",
-          "dependsOn": [],
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+          ],
           "tags": {},
           "properties": {
             "description": "Azure Subscription Credentials",
