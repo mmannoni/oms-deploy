@@ -3,153 +3,153 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "deploymentName": {
-            "type": "String"
+            "type": "string"
         },
         "workspaceSubscriptionId": {
-            "type": "String"
+            "type": "string"
         },
         "workspaceResourceGroupName": {
-            "type": "String"
+            "type": "string"
         },
         "workspaceName": {
-            "type": "String"
+            "type": "string"
         },
         "accountName": {
-            "type": "String"
+            "type": "string"
         },
         "accountResourceId": {
-            "type": "String"
+            "type": "string"
         },
         "workspaceLocation": {
-            "type": "String"
+            "type": "string"
         },
         "accountSubscriptionId": {
-            "type": "String"
+            "type": "string"
         },
         "accountResourceGroupName": {
-            "type": "String"
+            "type": "string"
         },
         "accountLocation": {
-            "type": "String"
+            "type": "string"
         },
         "workspaceSku": {
-            "type": "String"
+            "type": "string"
         },
         "workspaceSearchVersion": {
-            "type": "String"
+            "type": "string"
         },
         "accountSku": {
-            "type": "String"
+            "type": "string"
         },
         "vmResourceGroupName": {
-            "type": "String"
+            "type": "string"
         },
         "vmName": {
-            "type": "String"
+            "type": "string"
         },
         "vmLocation": {
-            "type": "String"
+            "type": "string"
         },
         "vmResourceId": {
-            "type": "String"
+            "type": "string"
         },
         "vmIdentityRequired": {
             "defaultValue": "false",
-            "type": "Bool"
+            "type": "bool"
         },
         "workspaceResourceId": {
-            "type": "String"
+            "type": "string"
         },
         "mmaExtensionName": {
             "defaultValue": "",
-            "type": "String"
+            "type": "string"
         },
         "computerGroupQueryId": {
-            "type": "String"
+            "type": "string"
         },
         "computerGroupQueryResourceName": {
-            "type": "String"
+            "type": "string"
         },
         "computerGroupQueryCategory": {
-            "type": "String"
+            "type": "string"
         },
         "computerGroupQueryDisplayName": {
-            "type": "String"
+            "type": "string"
         },
         "computerGroupQueryQuery": {
-            "type": "String"
+            "type": "string"
         },
         "computerGroupQueryFunctionAlias": {
-            "type": "String"
+            "type": "string"
         },
         "computerGroupQueryEtag": {
-            "type": "String"
+            "type": "string"
         },
         "scopeConfigurationId": {
-            "type": "String"
+            "type": "string"
         },
         "scopeConfigurationResourceName": {
-            "type": "String"
+            "type": "string"
         },
         "scopeConfigurationKind": {
-            "type": "String"
+            "type": "string"
         },
         "scopeConfigurationInclude": {
-            "type": "Array"
+            "type": "array"
         },
         "scopeConfigurationEtag": {
-            "type": "String"
+            "type": "string"
         },
         "solutionType": {
-            "type": "String"
+            "type": "string"
         },
         "scopeConfigurationName": {
-            "type": "String"
+            "type": "string"
         },
         "dscRefreshFrequencyMins": {
-            "type": "String"
+            "type": "string"
         },
         "dscConfigurationModeFrequencyMins": {
-            "type": "String"
+            "type": "string"
         },
         "dscConfigurationMode": {
-            "type": "String"
+            "type": "string"
         },
         "dscActionAfterReboot": {
-            "type": "String"
+            "type": "string"
         },
         "dscRebootNodeifNeeded": {
-            "type": "Bool"
+            "type": "bool"
         },
         "dscAllowModuleOverride": {
-            "type": "Bool"
+            "type": "bool"
         },
         "accountTemplateLinkUri": {
-            "type": "String"
+            "type": "string"
         },
         "linkTemplateLinkUri": {
-            "type": "String"
+            "type": "string"
         },
         "mmaTemplateLinkUri": {
-            "type": "String"
+            "type": "string"
         },
         "solutionTemplateLinkUri": {
-            "type": "String"
+            "type": "string"
         },
         "computerGroupQueryTemplateLinkUri": {
-            "type": "String"
+            "type": "string"
         },
         "scopeConfigurationTemplateLinkUri": {
-            "type": "String"
+            "type": "string"
         },
         "dscTemplateLinkUri": {
-            "type": "String"
+            "type": "string"
         },
         "dscSecurityBaselineType": {
-            "type": "String"
+            "type": "string"
         },
         "changeTrackingSettingsTemplateLinkUri": {
-            "type": "String"
+            "type": "string"
         }
     },
     "resources": [
