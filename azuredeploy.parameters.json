@@ -3,25 +3,25 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "omsWorkspaceName": {
-            "value": "GEN-UNIQUE-20"
+            "value": ""
         },
         "omsWorkspaceRegion": {
             "value": "West Europe"
         },
         "omsAutomationAccountName": {
-            "value": "GEN-UNIQUE-30"
+            "value": ""
         },
         "omsAutomationRegion": {
             "value": "West Europe"
         },
         "azureAdminPwd": {
-            "value": "GEN-PASSWORD"
+            "value": ""
         },
         "azureAdmin": {
-            "value": "azureadmin"
+            "value": ""
         },
         "_artifactsLocation": {
-            "value": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/oms-all-deploy"
+            "value": "https://raw.githubusercontent.com/mmannoni/oms-deploy/master/"
         }
     }
 }
