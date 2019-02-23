@@ -13,16 +13,7 @@
       "type": "string",
       "defaultValue": "West Europe",
       "allowedValues": [
-        "Japan East",
-        "East US 2",
-        "West Europe",
-        "Southeast Asia",
-        "South Central US",
-        "North Europe",
-        "Canada Central",
-        "Australia Southeast",
-        "Central India",
-        "Japan East"
+        "West Europe"
       ],
       "metadata": {
         "description": "Specify the region for your Automation account"
@@ -33,13 +24,6 @@
       "defaultValue": "",
       "metadata": {
         "description": "Assign a name for the OMS workspace"
-      }
-    },
-    "omsRecoveryVaultName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Assign a name for the ASR Recovery Vault"
       }
     },
     "azureAdmin": {
@@ -56,7 +40,7 @@
     },
     "_artifactsLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/oms-all-deploy",
+      "defaultValue": "https://raw.githubusercontent.com/mmannoni/oms-deploy/master/",
       "metadata": {
         "description": "The base URI where artifacts required by this template are located"
       }
@@ -91,39 +75,16 @@
         "name": "AzureRm.OperationalInsights",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.operationalinsights.2.8.0.nupkg"
       },
-      "azureRmSiteRecovery": {
-        "name": "AzureRm.SiteRecovery",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.siterecovery.3.7.0.nupkg"
-      },
-      "azureRmRecoveryServices": {
-        "name": "AzureRm.RecoveryServices",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.recoveryservices.2.8.0.nupkg"
-      },
-      "azureRmBackup": {
-        "name": "AzureRm.Backup",
-        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.backup.2.8.0.nupkg"
-      },
       "azureRmCompute": {
         "name": "AzureRm.Compute",
         "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.compute.2.9.0.nupkg"
       }
     },
-    "runbooks": {
-      "omsABUscript": {
-        "name": "AzureIaasBackup",
-        "version": "1.0.0.0",
-        "description": "Runbook to automatically backup IaaS VMs within the ABU region",
-        "type": "PowerShell",
-        "Id": ""
-      }
-    },
-    "scriptUri": "[concat(parameters('_artifactsLocation'),'/scripts/Automated-IaaS-Backup.ps1', parameters('_artifactsLocationSasToken'))]",
     "azureSubscriptionId": "AzureSubscriptionId",
     "omsWorkspaceId": "OMSWorkspaceId",
     "omsWorkspaceKey": "OMSWorkspacekey",
     "omsWorkspaceNameAsset": "OMSWorkspaceName",
     "omsResourceGroupName": "OMSResourceGroupName",
-    "omsRecoveryVault": "OMSRecoveryVault",
     "azureCredentials": "AzureCredentials"
   },
   "resources": [
@@ -181,30 +142,12 @@
           }
         },
         {
-          "name": "[variables('omsRecoveryVault')]",
-          "type": "variables",
-          "apiVersion": "2015-10-31",
-          "dependsOn": [
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
-          ],
-          "tags": {},
-          "properties": {
-            "description": "OMS Recovery Vault Name",
-            "value": "[concat('\"',parameters('omsRecoveryVaultName'),'\"')]"
-          }
-        },
-        {
           "name": "[variables('omsResourceGroupName')]",
           "type": "variables",
           "apiVersion": "2015-10-31",
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
-          ],
-          "tags": {},
-          "properties": {
-            "description": "OMS Recovery Vault Name",
-            "value": "[concat('\"',resourceGroup().name,'\"')]"
-          }
+          ]
         },
         {
           "name": "[variables('azureCredentials')]",
@@ -226,12 +169,7 @@
           "apiVersion": "2015-10-31",
           "dependsOn": [
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
-          ],
-          "tags": {},
-          "properties": {
-            "description": "OMS Recovery Vault Name",
-            "value": "[concat('\"',parameters('omsWorkspaceName'),'\"')]"
-          }
+          ]
         },
         {
           "name": "[variables('psModules').azureRmOperationalInsights.name]",
@@ -310,54 +248,6 @@
           }
         },
         {
-          "name": "[variables('psModules').azureRmSiteRecovery.name]",
-          "type": "Modules",
-          "apiVersion": "2015-10-31",
-          "tags": {},
-          "dependsOn": [
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmProfile.name)]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureStorage.name)]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('psModules').azureRmSiteRecovery.url]"
-            }
-          }
-        },
-        {
-          "name": "[variables('psModules').azureRmBackup.name]",
-          "type": "Modules",
-          "apiVersion": "2015-10-31",
-          "tags": {},
-          "dependsOn": [
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmProfile.name)]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureStorage.name)]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('psModules').azureRmBackup.url]"
-            }
-          }
-        },
-        {
-          "name": "[variables('psModules').azureRmRecoveryServices.name]",
-          "type": "Modules",
-          "apiVersion": "2015-10-31",
-          "tags": {},
-          "dependsOn": [
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmProfile.name)]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsautomationAccountName'), '/Modules/', variables('psModules').azureStorage.name)]"
-          ],
-          "properties": {
-            "contentLink": {
-              "uri": "[variables('psModules').azureRmRecoveryServices.url]"
-            }
-          }
-        },
-        {
           "name": "[variables('psModules').azureRmProfile.name]",
           "type": "Modules",
           "apiVersion": "2015-10-31",
@@ -385,10 +275,6 @@
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmResources.name)]",
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmCompute.name)]",
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureStorage.name)]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmStorage.name)]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmRecoveryServices.name)]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmSiteRecovery.name)]",
-            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmBackup.name)]",
             "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmOperationalInsights.name)]"
           ],
           "tags": {},
