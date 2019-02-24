@@ -1,0 +1,281 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "omsAutomationAccountName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Assign a name for the Automation account"
+      }
+    },
+    "omsAutomationRegion": {
+      "type": "string",
+      "defaultValue": "West Europe",
+      "allowedValues": [
+        "Japan East",
+        "East US 2",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US",
+        "North Europe",
+        "Canada Central",
+        "Australia Southeast",
+        "Central India",
+        "Japan East"
+      ],
+      "metadata": {
+        "description": "Specify the region for your Automation account"
+      }
+    },
+    "omsWorkspaceName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Assign a name for the OMS workspace"
+      }
+    },
+    "azureAdmin": {
+      "type": "string",
+      "metadata": {
+        "description": "Enter your service admin user"
+      }
+    },
+    "azureAdminPwd": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Enter the pwd for the service admin user. The pwd is enrypted during runtime and in the Automation assets"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/mmannoni/oms-deploy/master/",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      }
+    }
+  },
+  "variables": {
+    "psmodules": {
+      "azureRmProfile": {
+        "name": "AzureRm.Profile",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.profile.2.8.0.nupkg"
+      },
+      "azureRmResources": {
+        "name": "AzureRm.Resources",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.resources.3.8.0.nupkg"
+      },
+      "azureStorage": {
+        "name": "Azure.Storage",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azure.storage.2.8.0.nupkg"
+      },
+      "azureRmStorage": {
+        "name": "AzureRm.Storage",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.storage.2.8.0.nupkg"
+      },
+      "azureRmOperationalInsights": {
+        "name": "AzureRm.OperationalInsights",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.operationalinsights.2.8.0.nupkg"
+      },
+      "azureRmCompute": {
+        "name": "AzureRm.Compute",
+        "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.compute.2.9.0.nupkg"
+      }
+    },
+    "azureSubscriptionId": "AzureSubscriptionId",
+    "omsWorkspaceId": "OMSWorkspaceId",
+    "omsWorkspaceKey": "OMSWorkspacekey",
+    "omsWorkspaceNameAsset": "OMSWorkspaceName",
+    "omsResourceGroupName": "OMSResourceGroupName",
+    "azureCredentials": "AzureCredentials"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-10-31",
+      "location": "[parameters('omsAutomationRegion')]",
+      "name": "[parameters('omsAutomationAccountName')]",
+      "type": "Microsoft.Automation/automationAccounts",
+      "comments": "Automation account for OMS",
+      "properties": {
+        "sku": {
+          "name": "Basic"
+        }
+      },
+      "resources": [
+        {
+          "name": "[variables('omsWorkspaceId')]",
+          "type": "variables",
+          "apiVersion": "2015-10-31",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "description": "OMS Workspace Id",
+            "value": "[concat('\"',reference(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName')),'2015-11-01-preview').customerId,'\"')]"
+          }
+        },
+        {
+          "name": "[variables('omsWorkspaceKey')]",
+          "type": "variables",
+          "apiVersion": "2015-10-31",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "description": "OMS Workspace key",
+            "value": "[concat('\"',listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName')), '2015-11-01-preview').primarySharedKey,'\"')]"
+          }
+        },
+        {
+          "name": "[variables('azureSubscriptionId')]",
+          "type": "variables",
+          "apiVersion": "2015-10-31",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "description": "Azure Subscription Id",
+            "isEncrypted": false,
+            "type": "string",
+            "value": "[concat('\"',subscription().subscriptionId,'\"')]"
+          }
+        },
+        {
+          "name": "[variables('azureCredentials')]",
+          "type": "credentials",
+          "apiVersion": "2015-10-31",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "description": "Azure Subscription Credentials",
+            "password": "[parameters('azureAdminPwd')]",
+            "userName": "[parameters('azureAdmin')]"
+          }
+        },
+        {
+          "name": "[variables('psmodules').azureRmOperationalInsights.name]",
+          "type": "modules",
+          "apiVersion": "2015-10-31",
+          "tags": {},
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmProfile.name)]"
+          ],
+          "properties": {
+            "contentLink": {
+              "uri": "[variables('psmodules').azureRmOperationalInsights.url]"
+            }
+          }
+        },
+        {
+          "name": "[variables('psmodules').azureRmResources.name]",
+          "type": "modules",
+          "apiVersion": "2015-10-31",
+          "tags": {},
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmProfile.name)]"
+          ],
+          "properties": {
+            "contentLink": {
+              "uri": "[variables('psmodules').azureRmResources.url]"
+            }
+          }
+        },
+        {
+          "name": "[variables('psmodules').azureRmStorage.name]",
+          "type": "modules",
+          "apiVersion": "2015-10-31",
+          "tags": {},
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmProfile.name)]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureStorage.name)]"
+          ],
+          "properties": {
+            "contentLink": {
+              "uri": "[variables('psmodules').azureRmStorage.url]"
+            }
+          }
+        },
+        {
+          "name": "[variables('psmodules').azureStorage.name]",
+          "type": "modules",
+          "apiVersion": "2015-10-31",
+          "tags": {},
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmProfile.name)]"
+          ],
+          "properties": {
+            "contentLink": {
+              "uri": "[variables('psmodules').azureStorage.url]"
+            }
+          }
+        },
+        {
+          "name": "[variables('psmodules').azureRmCompute.name]",
+          "type": "modules",
+          "apiVersion": "2015-10-31",
+          "tags": {},
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]",
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/Modules/', variables('psModules').azureRmProfile.name)]"
+          ],
+          "properties": {
+            "contentLink": {
+              "uri": "[variables('psmodules').azureRmCompute.url]"
+            }
+          }
+        },
+        {
+          "name": "[variables('psmodules').azureRmProfile.name]",
+          "type": "modules",
+          "apiVersion": "2015-10-31",
+          "tags": {},
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+          ],
+          "properties": {
+            "contentLink": {
+              "uri": "[variables('psmodules').azureRmProfile.url]"
+            }
+          }
+        },
+        {
+        "apiVersion": "2017-05-10",
+        "location": "[resourceGroup().location]",
+        "name": "[variables('updates').name]",
+        "type": "Microsoft.OperationsManagement/solutions",
+        "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.OperationsManagement/solutions/', variables('updates').name)]",
+        "dependsOn": [
+            "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+        ],
+        "properties": {
+            "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+        },
+        "plan": {
+            "name": "[variables('updates').name]",
+            "publisher": "Microsoft",
+            "promotionCode": "",
+            "product": "[concat('OMSGallery/', variables('updates').galleryName)]"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {}
+}
