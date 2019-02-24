@@ -254,24 +254,22 @@
             }
           }
         },
-        {
-        "apiVersion": "2017-05-10",
-        "location": "[resourceGroup().location]",
-        "name": "[variables('updates').name]",
-        "type": "Microsoft.OperationsManagement/solutions",
-        "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.OperationsManagement/solutions/', variables('updates').name)]",
-        "dependsOn": [
-            "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-        ],
-        "properties": {
-            "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
-        },
-        "plan": {
-            "name": "[variables('updates').name]",
-            "publisher": "Microsoft",
-            "promotionCode": "",
-            "product": "[concat('OMSGallery/', variables('updates').galleryName)]"
-            }
+        {        "apiVersion": "2015-10-31",
+          "location": "[resourceGroup().location]",
+          "name": "[variables('updates').name]",
+          "type": "watchers",
+          "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.OperationsManagement/solutions/', variables('updates').name)]",
+          "dependsOn": [
+              "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+          ],
+          "properties": {
+              "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+          },
+          "plan": {
+              "name": "[variables('updates').name]",
+              "publisher": "Microsoft",
+              "promotionCode": "",
+              "product": "[concat('OMSGallery/', variables('updates').galleryName)]"
           }
         }
       ]
