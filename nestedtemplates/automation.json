@@ -253,8 +253,43 @@
               "uri": "[variables('psmodules').azureRmProfile.url]"
             }
           }
-        }
+        },
+        {
+          "name": "Automation",
+          "type": "watchers",
+          "apiVersion": "2015-10-31",
+          "dependsOn": [
+              "[variables('automation')]",
+              "[variables('namespace')]"
+          ],
+          "properties": {
+              "resourceId": "[resourceId('Microsoft.Automation/automationAccounts/', variables('automation'))]"
+            }
+       },
+      {
+        "type": "Microsoft.OperationsManagement/solutions",
+        "name": "[concat(variables('solutions')[copyIndex()],'(', variables('namespace'), ')')]",
+        "apiVersion": "2015-10-31",
+        "location": "[resourceGroup().location]",
+        "copy": {
+            "name": "solutions",
+            "count": "[length(variables('solutions'))]"
+        },
+        "plan": {
+            "name": "[concat(variables('solutions')[copyIndex()], '(', variables('namespace'), ')')]",
+            "promotionCode": "",
+            "product": "[concat('OMSGallery/', variables('solutions')[copyIndex()])]",
+            "publisher": "Microsoft"
+        },
+        "properties": {
+            "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('namespace'))]"
+        },
+        "dependsOn": [
+            "[variables('namespace')]"
+        ]
+      }
       ]
+    
     }
   ],
   "outputs": {}
