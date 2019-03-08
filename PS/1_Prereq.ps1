@@ -194,16 +194,8 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Linux\omsagent-1.9.0-
     WriteInfo "`t Agent Linux not present - Downloading Dependency Agent"
     try {
         $url = 'https://github.com/Microsoft/OMS-Agent-for-Linux/releases/download/OMSAgent_v1.9.0-0/omsagent-1.9.0-0.universal.x64.sh'
-        $WebRequest = [System.Net.WebRequest]::create($URL)
-        $WebResponse = $WebRequest.GetResponse()
-        $ActualDownloadURL = $WebResponse.ResponseUri.AbsoluteUri
-        $ObjectProperties = @{ 'Shortened URL' = $URL;
-                       'Actual URL' = $ActualDownloadURL}
-        $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
-        $WebResponse.Close()
-        $ResultsObject.'Actual URL'
         $output = "$InstallRoot\UpdateManagement\Agents\Linux\omsagent-1.9.0-0.universal.x64.sh"
-        Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
+        Start-BitsTransfer -Source $URL -Destination $output
     }catch{
         WriteError "`t Failed to download Agent Linux!"
     }
