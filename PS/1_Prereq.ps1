@@ -166,6 +166,18 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\OMSGateway\OMS Gateway.msi" 
 
 
 # Download install scripts
+    WriteInfoHighlighted "Looking for 0_Configuration.ps1 script"
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\0_Configuration.ps1" ) {
+        WriteSuccess "`t 0_Configuration.ps1 is present, skipping download"
+    }else{ 
+        WriteInfo "`t Downloading 0_Configuration.ps1"
+        try{
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/0_Configuration.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\0_Configuration.ps1"
+        }catch{
+            WriteError "`t Failed to download 0_Configuration.ps1!"
+        }
+    }
+
     WriteInfoHighlighted "Looking for 1_Prereq.ps1 script"
     If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\1_Prereq.ps1" ) {
         WriteSuccess "`t 1_Prereq.ps1 is present, skipping download"
