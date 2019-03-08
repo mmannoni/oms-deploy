@@ -257,6 +257,7 @@ WriteInfoHighlighted "Hyper-V Tools presence"
     Install-WindowsFeature -Name RSAT-Hyper-V-Tools
     }
 WriteInfoHighlighted "Azure Powershell Installation"
+	Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name Az -AllowClobber -force
 WriteInfoHighlighted "`t Powershell Help Update"
     Update-Help -Force
