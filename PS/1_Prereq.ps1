@@ -106,7 +106,7 @@ If (!( $isAdmin )) {
 
 
 
-#region Download Software
+#region Download Software & Scripts
 
 # Downloading Windows Agent
 WriteInfoHighlighted "Windows Agent presence"
@@ -163,8 +163,45 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\OMSGateway\OMS Gateway.msi" 
     }
 }
 
-#endregion
 
+
+# Download install scripts
+    WriteInfoHighlighted "Looking for 1_Prereq.ps1 script"
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\1_Prereq.ps1" ) {
+        WriteSuccess "`t 1_Prereq.ps1 is present, skipping download"
+    }else{ 
+        WriteInfo "`t Downloading 1_Prereq.ps1"
+        try{
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/1_Prereq.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\1_Prereq.ps1"
+        }catch{
+            WriteError "`t Failed to download 1_Prereq.ps1!"
+        }
+    }
+
+    WriteInfoHighlighted "Looking for 2_OnPremisesDeployment.ps1 script"
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\2_OnPremisesDeployment.ps1" ) {
+        WriteSuccess "`t 2_OnPremisesDeployment.ps1 is present, skipping download"
+    }else{ 
+        WriteInfo "`t Downloading 2_OnPremisesDeployment.ps1"
+        try{
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/2_OnPremisesDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\2_OnPremisesDeployment.ps1"
+        }catch{
+            WriteError "`t Failed to download 2_OnPremisesDeployment.ps1!"
+        }
+    }
+
+    WriteInfoHighlighted "Looking for Pre3_AzureDeployment.ps1 script"
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\3_AzureDeployment.ps1" ) {
+        WriteSuccess "`t 3_AzureDeployment.ps1 is present, skipping download"
+    }else{ 
+        WriteInfo "`t Downloading 3_AzureDeployment.ps1"
+        try{
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/3_AzureDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\3_AzureDeployment.ps1"
+        }catch{
+            WriteError "`t Failed to download 3_AzureDeployment.ps1!"
+        }
+    }
+#endregion
 
 #region Install WSUS and Tools
 

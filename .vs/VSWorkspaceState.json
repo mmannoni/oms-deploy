@@ -1,8 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\nestedtemplates"
+    "\\PS"
   ],
-  "SelectedNode": "\\nestedtemplates\\automation.json",
+  "SelectedNode": "\\PS\\2_OnPremisesDeployment.ps1",
   "PreviewInSolutionExplorer": false
 }
