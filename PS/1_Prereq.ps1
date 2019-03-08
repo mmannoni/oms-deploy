@@ -268,7 +268,7 @@ WriteInfoHighlighted "GPMC presence"
 If ( Get-WindowsFeature GPMC | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t GPMC is present, skipping installation"
 }else{ 
-    WriteInfo "`t GPMC not present - Installing WSUS with default settings"
+    WriteInfo "`t GPMC not present - Installing GPMC with default settings"
     Install-WindowsFeature -Name GPMC
     }
 WriteInfoHighlighted "Failover Cluster Tools presence"
