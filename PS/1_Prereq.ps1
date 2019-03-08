@@ -186,20 +186,18 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\InstallDepend
     }
 }
 
-# Downloading Agent Linux
-WriteInfoHighlighted "Agent Linux presence"
-If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Linux\omsagent-1.9.0-0.universal.x64.sh" ) {
-    WriteSuccess "`t Agent Linux is present, skipping download"
-}else{ 
-    WriteInfo "`t Agent Linux not present - Downloading Dependency Agent"
-    try {
-        $url = 'https://github.com/Microsoft/OMS-Agent-for-Linux/releases/download/OMSAgent_v1.9.0-0/omsagent-1.9.0-0.universal.x64.sh'
-        $output = "$InstallRoot\UpdateManagement\Agents\Linux\omsagent-1.9.0-0.universal.x64.sh"
-        Start-BitsTransfer -Source $URL -Destination $output
-    }catch{
-        WriteError "`t Failed to download Agent Linux!"
+# Downloading Linux Guide
+    WriteInfoHighlighted "Looking for Linux guide"
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Linux\README.md" ) {
+        WriteSuccess "`t Linux guide is present, skipping download"
+    }else{ 
+        WriteInfo "`t Downloading Linux guide"
+        try{
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/README.md -OutFile "$InstallRoot\UpdateManagement\Agents\Linux\README.txt"
+        }catch{
+            WriteError "`t Failed to Linux guide!"
+        }
     }
-}
 
 # Download install scripts
     WriteInfoHighlighted "Looking for 0_Configuration.ps1 script"
