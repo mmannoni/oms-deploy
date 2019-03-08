@@ -43,7 +43,7 @@ $StartDateTime = get-date
 
 
 # Checking Folder Structure
-"UpdateManagement\Agents","UpdateManagement\OMSGateway\","UpdateManagement\Scripts" | ForEach-Object {
+"UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\","UpdateManagement\Scripts" | ForEach-Object {
     if (!( Test-Path "$InstallRoot\$_" )) { New-Item -Type Directory -Path "$InstallRoot\$_" } }
 
 #endregion
@@ -110,7 +110,7 @@ If (!( $isAdmin )) {
 
 # Downloading Windows Agent
 WriteInfoHighlighted "Windows Agent presence"
-If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\MMASetup-AMD64.exe" ) {
+If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\MMASetup-AMD64.exe" ) {
     WriteSuccess "`t Windows Agent is present, skipping download"
 }else{ 
     WriteInfo "`t Windows Agent not present - Downloading Windows Agent"
@@ -124,20 +124,20 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\MMASetup-AMD64.exe" )
         $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
         $WebResponse.Close()
         $ResultsObject.'Actual URL'
-        $output = "$InstallRoot\UpdateManagement\Agents\MMASetup-AMD64.exe"
+        $output = "$InstallRoot\UpdateManagement\Agents\Windows\MMASetup-AMD64.exe"
         Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
     }catch{
         WriteError "`t Failed to download Windows Agent!"
     }
     # Extracting Windows Agent
     
-        $Command = "$InstallRoot\UpdateManagement\Agents\MMASetup-AMD64.exe"
-        $Parameter = "/Q /T:$InstallRoot\UpdateManagement\Agents\Windows /C"
+        $Command = "$InstallRoot\UpdateManagement\Agents\Windows\MMASetup-AMD64.exe"
+        $Parameter = "/Q /T:$InstallRoot\UpdateManagement\Agents\Windows\MMA /C"
         $Prms = $Parameter.Split("")
         & "$Command" $Prms
         $waitextract = (Get-Process MMASetup-AMD64).Id
         Wait-Process -Id $waitextract
-        Remove-Item -Path "$InstallRoot\UpdateManagement\Agents\MMASetup-AMD64.exe"
+        Remove-Item -Path "$InstallRoot\UpdateManagement\Agents\Windows\MMASetup-AMD64.exe"
 }
 
 # Downloading OMS Gateway
@@ -163,7 +163,51 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\OMSGateway\OMS Gateway.msi" 
     }
 }
 
+# Downloading Dependency Agent Windows
+WriteInfoHighlighted "Dependency Agent Windows presence"
+If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\InstallDependencyAgent-Windows.exe" ) {
+    WriteSuccess "`t Dependency Agent Windows is present, skipping download"
+}else{ 
+    WriteInfo "`t Dependency Agent Windows not present - Downloading Dependency Agent"
+    try {
+        $url = 'https://aka.ms/dependencyagentwindows'
+        $WebRequest = [System.Net.WebRequest]::create($URL)
+        $WebResponse = $WebRequest.GetResponse()
+        $ActualDownloadURL = $WebResponse.ResponseUri.AbsoluteUri
+        $ObjectProperties = @{ 'Shortened URL' = $URL;
+                       'Actual URL' = $ActualDownloadURL}
+        $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
+        $WebResponse.Close()
+        $ResultsObject.'Actual URL'
+        $output = "$InstallRoot\UpdateManagement\Agents\Windows\InstallDependencyAgent-Windows.exe"
+        Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
+    }catch{
+        WriteError "`t Failed to download Dependency Agent Windows!"
+    }
+}
 
+# Downloading Agent Linux
+WriteInfoHighlighted "Agent Linux presence"
+If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Linux\omsagent-1.9.0-0.universal.x64.sh" ) {
+    WriteSuccess "`t Agent Linux is present, skipping download"
+}else{ 
+    WriteInfo "`t Agent Linux not present - Downloading Dependency Agent"
+    try {
+        $url = 'https://github.com/Microsoft/OMS-Agent-for-Linux/releases/download/OMSAgent_v1.9.0-0/omsagent-1.9.0-0.universal.x64.sh'
+        $WebRequest = [System.Net.WebRequest]::create($URL)
+        $WebResponse = $WebRequest.GetResponse()
+        $ActualDownloadURL = $WebResponse.ResponseUri.AbsoluteUri
+        $ObjectProperties = @{ 'Shortened URL' = $URL;
+                       'Actual URL' = $ActualDownloadURL}
+        $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
+        $WebResponse.Close()
+        $ResultsObject.'Actual URL'
+        $output = "$InstallRoot\UpdateManagement\Agents\Linux\omsagent-1.9.0-0.universal.x64.sh"
+        Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
+    }catch{
+        WriteError "`t Failed to download Agent Linux!"
+    }
+}
 
 # Download install scripts
     WriteInfoHighlighted "Looking for 0_Configuration.ps1 script"
