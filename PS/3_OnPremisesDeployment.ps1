@@ -32,20 +32,9 @@ Param (
 
 
 # grab Time and start Transcript
-Start-Transcript -Path "$PSScriptRoot\2_OnPremisesDeployment.log"
+Start-Transcript -Path "$PSScriptRoot\3_OnPremisesDeployment.log"
 $StartDateTime = get-date
 
-
-#set TLS 1.2 for github downloads
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-
-
-# Checking Folder Structure
-"UpdateManagement\Agents","UpdateManagement\OMSGateway\" | ForEach-Object {
-    if (!( Test-Path "$PSScriptRoot\$_" )) { New-Item -Type Directory -Path "$PSScriptRoot\$_" } }
-
-#endregion
 
 #----------------------------------------------------------[Declarations]----------------------------------------------------------
 
@@ -81,10 +70,6 @@ Read-Host | Out-Null
 Exit
 }
 
-function  Get-WindowsBuildNumber { 
-$os = Get-WmiObject -Class Win32_OperatingSystem 
-return [int]($os.BuildNumber) 
-} 
 
 #endregion
 

@@ -22,7 +22,9 @@ $Configuration = @{
     OMSWorkspaceLocation = '';                                              # Location, usually westeurope
     TenantSubscriptionID = '';												# Subscription ID from the Azure portal
     AutomationAccountname = '';                                             # Name of the automation account
-    OMSWorkspaceSKU = 'pernode';                                            # do not change
-
+	InstallRoot = 'C:\Sys\';                                                # Root folder for installation
+	OMSWorkspaceSKU = 'pernode';                                            # do not change
+	OMSWorkspaceID = '#omsworkspaceid';                                     # do not change
+	OMSWorkspaceKey ='#OMSWorkspacekey';                                    # do not change
 
 }

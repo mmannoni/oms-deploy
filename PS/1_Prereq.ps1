@@ -21,12 +21,15 @@
 #>
 
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
+# Verify Running as Admin
+$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+If (!( $isAdmin )) {
+    Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
+    exit
+}
 
-Param (
-  #Script parameters go here
-)
 
-$InstallRoot = "C:\Sys\"
 #---------------------------------------------------------[Initialisations]--------------------------------------------------------
 
 #region Initializtion
@@ -35,7 +38,11 @@ $InstallRoot = "C:\Sys\"
 # grab Time and start Transcript
 Start-Transcript -Path "$InstallRoot\1_Prereq.log"
 $StartDateTime = get-date
+WriteInfo "Script started at $StartDateTime"
 
+#Load Configfile....
+WriteInfo "`t Loading configuration file"
+."$PSScriptRoot\0_Configuration.ps1"
 
 #set TLS 1.2 for github downloads
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -47,11 +54,6 @@ $StartDateTime = get-date
     if (!( Test-Path "$InstallRoot\$_" )) { New-Item -Type Directory -Path "$InstallRoot\$_" } }
 
 #endregion
-
-#----------------------------------------------------------[Declarations]----------------------------------------------------------
-
-#Script Version
-$sScriptVersion = '1.0'
 
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
@@ -90,20 +92,6 @@ return [int]($os.BuildNumber)
 #endregion
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
-#
-#
-WriteInfo "Script started at $StartDateTime"
-#
-#
-# Verify Running as Admin
-$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-If (!( $isAdmin )) {
-    Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
-    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
-    exit
-}
-
-
 
 
 #region Download Software & Scripts
@@ -224,29 +212,30 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\InstallDepend
         }
     }
 
-    WriteInfoHighlighted "Looking for 2_OnPremisesDeployment.ps1 script"
-    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\2_OnPremisesDeployment.ps1" ) {
-        WriteSuccess "`t 2_OnPremisesDeployment.ps1 is present, skipping download"
+    WriteInfoHighlighted "Looking for 2_AzureDeployment.ps1 script"
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\2_AzureDeployment.ps1" ) {
+        WriteSuccess "`t 2_AzureDeployment.ps1 is present, skipping download"
+    }else{ 
+        WriteInfo "`t Downloading 2_AzureDeployment.ps1"
+        try{
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/2_AzureDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\2_AzureDeployment.ps1"
+        }catch{
+            WriteError "`t Failed to download 3_AzureDeployment.ps1!"
+        }
+    }
+
+    WriteInfoHighlighted "Looking for 3_OnPremisesDeployment.ps1 script"
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\3_OnPremisesDeployment.ps1" ) {
+        WriteSuccess "`t 3_OnPremisesDeployment.ps1 is present, skipping download"
     }else{ 
         WriteInfo "`t Downloading 2_OnPremisesDeployment.ps1"
         try{
-            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/2_OnPremisesDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\2_OnPremisesDeployment.ps1"
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/3_OnPremisesDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\3_OnPremisesDeployment.ps1"
         }catch{
             WriteError "`t Failed to download 2_OnPremisesDeployment.ps1!"
         }
     }
 
-    WriteInfoHighlighted "Looking for 3_AzureDeployment.ps1 script"
-    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\3_AzureDeployment.ps1" ) {
-        WriteSuccess "`t 3_AzureDeployment.ps1 is present, skipping download"
-    }else{ 
-        WriteInfo "`t Downloading 3_AzureDeployment.ps1"
-        try{
-            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/3_AzureDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\3_AzureDeployment.ps1"
-        }catch{
-            WriteError "`t Failed to download 3_AzureDeployment.ps1!"
-        }
-    }
 #endregion
 
 #region Install WSUS and Tools

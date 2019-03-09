@@ -12,7 +12,7 @@
 .INPUTS
   0_Configuration.ps1
 .OUTPUTS Log File
-  The script log file stored in C:\Temp\3_AzureDeployment.log
+  The script log file stored in C:\Temp\2_AzureDeployment.log
 .NOTES
   Version:        1.0
   Author:         Marco Mannoni
@@ -22,28 +22,32 @@
 
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
 #
-# Parameters will be loaded from 0_Configuration.ps1 file
+# Verify Running as Admin
+$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+If (!( $isAdmin )) {
+    Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
+    exit
+}
 #
 #---------------------------------------------------------[Initialisations]--------------------------------------------------------
 
 #region Initializtion
 
-
 # grab Time and start Transcript
-Start-Transcript -Path "$PSScriptRoot\3_AzureDeployment.log"
+Start-Transcript -Path "$InstallRoot\2_AzureDeployment.log"
 $StartDateTime = get-date
+WriteInfo "Script started at $StartDateTime"
 
+#Load Configfile....
+WriteInfo "`t Loading configuration file"
+."$PSScriptRoot\0_Configuration.ps1"
 
 #set TLS 1.2 for github downloads
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 
 #endregion
-
-#----------------------------------------------------------[Declarations]----------------------------------------------------------
-
-#Script Version
-$sScriptVersion = '1.0'
 
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
@@ -79,14 +83,6 @@ Exit
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
 #
-#
-WriteInfo "Script started at $StartDateTime"
-#
-#Load Configfile....
-WriteInfo "`t Loading configuration file"
-."$PSScriptRoot\0_Configuration.ps1"
-
-
 #Region Azure Logon
 
 #Logon to the Azure Subscription and set the right context
@@ -119,10 +115,15 @@ $OMSWorkspace = New-AzOperationalInsightsWorkspace `
                 -Location $configuration.OMSWorkspaceLocation `
                 -SKU $configuration.OMSWorkspaceSKU `
 
+WriteInfo "`t Workspace created, getting workspace ID and Keys"
 $OMSWorkspaceID = $OMSWorkspace.CustomerId
 $OMSWorkspaceKey = Get-AzOperationalInsightsWorkspaceSharedKeys `
                 -ResourceGroupName $OMSWorkspace.ResourceGroupName `
                 -Name $OMSWorkspace.Name
+
+WriteInfo "`t Writing ID and key in 0_Configuration.ps1"
+(Get-Content -Path .\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#omsworkspaceid', $OMSWorkspaceID} | Set-Content -Path .\0_Configuration.ps1
+(Get-Content -Path .\0_Configuration.ps1) | ForEach-Object {$_ -Replace '##OMSWorkspacekey', $omsworkspacekey.PrimarySharedKey} | Set-Content -Path .\0_Configuration.ps1
 
 #Create the Automation acccount
 WriteInfo "`t Creating Automation Account"
