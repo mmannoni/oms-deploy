@@ -82,57 +82,6 @@ WriteInfo "`t Loading configuration file"
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
 
-#region installation of tools
-
-
-#Installing Windows Features and WSUS
-WriteInfoHighlighted "WSUS presence"
-If ( Get-WindowsFeature UpdateServices | Where-Object InstallState -EQ "Installed" ) {
-    WriteSuccess "`t WSUS is present, skipping installation"
-}else{ 
-    WriteInfo "`t WSUS not present - Installing WSUS with default settings"
-    Install-WindowsFeature -Name UpdateServices, UpdateServices-WidDB, UpdateServices-Services, UpdateServices-RSAT, UpdateServices-API, UpdateServices-UI
-    }
-
-#Installing Management Tools
-WriteInfoHighlighted "GPMC presence"
-If ( Get-WindowsFeature GPMC | Where-Object InstallState -EQ "Installed" ) {
-    WriteSuccess "`t GPMC is present, skipping installation"
-}else{ 
-    WriteInfo "`t GPMC not present - Installing WSUS with default settings"
-    Install-WindowsFeature -Name GPMC
-    }
-WriteInfoHighlighted "Failover Cluster Tools presence"
-If ( Get-WindowsFeature RSAT-Clustering | Where-Object InstallState -EQ "Installed" ) {
-    WriteSuccess "`t Failover Cluster Tools are present, skipping installation"
-    }else{ 
-    WriteInfo "`t Failover Cluster Tools not present - Installing Failover Cluster Tools"
-    Install-WindowsFeature -Name RSAT-Clustering-Mgmt, RSAT-Clustering-Powershell
-    }
-WriteInfoHighlighted "AD DS and AD LDS Tools presence"
-    If ( Get-WindowsFeature RSAT-AD-Tools | Where-Object InstallState -EQ "Installed" ) {
-    WriteSuccess "`t AD DS and AD LDS Tools are present, skipping installation"
-    }else{ 
-    WriteInfo "`t AD DS and AD LDS Tools not present - Installing AD DS and AD LDS Tools"
-    Install-WindowsFeature -Name RSAT-AD-Tools
-    }
-WriteInfoHighlighted "Hyper-V Tools presence"
-    If ( Get-WindowsFeature RSAT-Hyper-V-Tools | Where-Object InstallState -EQ "Installed" ) {
-    WriteSuccess "`t Hyper-V Tools are present, skipping installation"
-    }else{ 
-    WriteInfo "`t Hyper-V Tools not present - Installing Hyper-V Tools"
-    Install-WindowsFeature -Name RSAT-Hyper-V-Tools
-    }
-WriteInfoHighlighted "Azure Powershell Installation"
-    Install-Module -Name Az -AllowClobber -force
-WriteInfoHighlighted "Powershell Help Update"
-    Update-Help -Force
-
-WriteInfoHighlighted "WSUS and Management tools installed successfully"
-
-#endregion
-
-
 #region installation of OMS components on Premises
 
 #Installing MMA
