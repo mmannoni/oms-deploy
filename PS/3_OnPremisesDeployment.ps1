@@ -20,34 +20,6 @@
   <Example goes here. Repeat this attribute for more than one example>
 #>
 
-#---------------------------------------------------------[Script Parameters]------------------------------------------------------
-#region parameters
-
-# Verify Running as Admin
-$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-If (!( $isAdmin )) {
-    Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
-    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
-    exit
-}
-
-#endregion
-
-#---------------------------------------------------------[Initialisations]--------------------------------------------------------
-
-#region Initialisations
-
-# grab Time and start Transcript
-Start-Transcript -Path "$PSScriptRoot\3_OnPremisesDeployment.log"
-$StartDateTime = get-date
-WriteInfo "Script started at $StartDateTime"
-
-#Load Configfile....
-WriteInfo "`t Loading configuration file"
-."$PSScriptRoot\0_Configuration.ps1"
-
-#endregion
-
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
 
 #region Functions
@@ -77,6 +49,36 @@ Exit
 }
 
 #endregion
+
+
+#---------------------------------------------------------[Script Parameters]------------------------------------------------------
+#region parameters
+
+# Verify Running as Admin
+$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+If (!( $isAdmin )) {
+    Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
+    exit
+}
+
+#endregion
+
+#---------------------------------------------------------[Initialisations]--------------------------------------------------------
+
+#region Initialisations
+
+# grab Time and start Transcript
+Start-Transcript -Path "$PSScriptRoot\3_OnPremisesDeployment.log"
+$StartDateTime = get-date
+WriteInfo "Script started at $StartDateTime"
+
+#Load Configfile....
+WriteInfo "`t Loading configuration file"
+."$PSScriptRoot\0_Configuration.ps1"
+
+#endregion
+
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
 

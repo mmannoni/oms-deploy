@@ -20,6 +20,37 @@
   <Example goes here. Repeat this attribute for more than one example>
 #>
 
+#-----------------------------------------------------------[Functions]------------------------------------------------------------
+
+#region Functions
+
+function WriteInfo($message){
+    Write-Host $message
+}
+
+function WriteInfoHighlighted($message){
+Write-Host $message -ForegroundColor Cyan
+}
+
+function WriteSuccess($message){
+Write-Host $message -ForegroundColor Green
+}
+
+function WriteError($message){
+Write-Host $message -ForegroundColor Red
+}
+
+function WriteErrorAndExit($message){
+Write-Host $message -ForegroundColor Red
+Write-Host "Press enter to continue ..."
+Stop-Transcript
+Read-Host | Out-Null
+Exit
+}
+
+#endregion
+
+
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
 # Verify Running as Admin
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
@@ -52,41 +83,6 @@ WriteInfo "Script started at $StartDateTime"
 
 #endregion
 
-
-#-----------------------------------------------------------[Functions]------------------------------------------------------------
-
-#region Functions
-
-function WriteInfo($message){
-    Write-Host $message
-}
-
-function WriteInfoHighlighted($message){
-Write-Host $message -ForegroundColor Cyan
-}
-
-function WriteSuccess($message){
-Write-Host $message -ForegroundColor Green
-}
-
-function WriteError($message){
-Write-Host $message -ForegroundColor Red
-}
-
-function WriteErrorAndExit($message){
-Write-Host $message -ForegroundColor Red
-Write-Host "Press enter to continue ..."
-Stop-Transcript
-Read-Host | Out-Null
-Exit
-}
-
-function  Get-WindowsBuildNumber { 
-$os = Get-WmiObject -Class Win32_OperatingSystem 
-return [int]($os.BuildNumber) 
-} 
-
-#endregion
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
 

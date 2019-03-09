@@ -23,6 +23,37 @@
 09.03.2019	Script changes
 #>
 
+#-----------------------------------------------------------[Functions]------------------------------------------------------------
+
+#region Functions
+
+function WriteInfo($message){
+    Write-Host $message
+}
+
+function WriteInfoHighlighted($message){
+Write-Host $message -ForegroundColor Cyan
+}
+
+function WriteSuccess($message){
+Write-Host $message -ForegroundColor Green
+}
+
+function WriteError($message){
+Write-Host $message -ForegroundColor Red
+}
+
+function WriteErrorAndExit($message){
+Write-Host $message -ForegroundColor Red
+Write-Host "Press enter to continue ..."
+Stop-Transcript
+Read-Host | Out-Null
+Exit
+}
+
+#endregion
+
+
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
 
 # Verify Running as Admin
@@ -51,36 +82,6 @@ WriteInfo "`t Loading configuration file"
 
 #endregion
 
-
-#-----------------------------------------------------------[Functions]------------------------------------------------------------
-
-#region Functions
-
-function WriteInfo($message){
-    Write-Host $message
-}
-
-function WriteInfoHighlighted($message){
-Write-Host $message -ForegroundColor Cyan
-}
-
-function WriteSuccess($message){
-Write-Host $message -ForegroundColor Green
-}
-
-function WriteError($message){
-Write-Host $message -ForegroundColor Red
-}
-
-function WriteErrorAndExit($message){
-Write-Host $message -ForegroundColor Red
-Write-Host "Press enter to continue ..."
-Stop-Transcript
-Read-Host | Out-Null
-Exit
-}
- 
-#endregion
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
 
