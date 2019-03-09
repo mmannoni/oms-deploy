@@ -236,7 +236,7 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\InstallDepend
         }
     }
 
-    WriteInfoHighlighted "Looking for Pre3_AzureDeployment.ps1 script"
+    WriteInfoHighlighted "Looking for 3_AzureDeployment.ps1 script"
     If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\3_AzureDeployment.ps1" ) {
         WriteSuccess "`t 3_AzureDeployment.ps1 is present, skipping download"
     }else{ 
