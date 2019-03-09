@@ -29,6 +29,7 @@ If (!( $isAdmin )) {
     exit
 }
 
+$InstallRoot = 'C:\Sys\'
 
 #---------------------------------------------------------[Initialisations]--------------------------------------------------------
 
@@ -40,17 +41,13 @@ Start-Transcript -Path "$InstallRoot\1_Prereq.log"
 $StartDateTime = get-date
 WriteInfo "Script started at $StartDateTime"
 
-#Load Configfile....
-WriteInfo "`t Loading configuration file"
-."$PSScriptRoot\0_Configuration.ps1"
 
 #set TLS 1.2 for github downloads
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 
-
 # Checking Folder Structure
-"UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\","UpdateManagement\Scripts" | ForEach-Object {
+"UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\" | ForEach-Object {
     if (!( Test-Path "$InstallRoot\$_" )) { New-Item -Type Directory -Path "$InstallRoot\$_" } }
 
 #endregion
@@ -189,17 +186,17 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\InstallDepend
 
 # Download install scripts
     WriteInfoHighlighted "Looking for 0_Configuration.ps1 script"
-    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\0_Configuration.ps1" ) {
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\0_Configuration.ps1" ) {
         WriteSuccess "`t 0_Configuration.ps1 is present, skipping download"
     }else{ 
         WriteInfo "`t Downloading 0_Configuration.ps1"
         try{
-            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/0_Configuration.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\0_Configuration.ps1"
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/0_Configuration.ps1 -OutFile "$InstallRoot\UpdateManagement\0_Configuration.ps1"
         }catch{
             WriteError "`t Failed to download 0_Configuration.ps1!"
         }
     }
-
+<#
     WriteInfoHighlighted "Looking for 1_Prereq.ps1 script"
     If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\1_Prereq.ps1" ) {
         WriteSuccess "`t 1_Prereq.ps1 is present, skipping download"
@@ -211,26 +208,26 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\InstallDepend
             WriteError "`t Failed to download 1_Prereq.ps1!"
         }
     }
-
+#>
     WriteInfoHighlighted "Looking for 2_AzureDeployment.ps1 script"
-    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\2_AzureDeployment.ps1" ) {
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\2_AzureDeployment.ps1" ) {
         WriteSuccess "`t 2_AzureDeployment.ps1 is present, skipping download"
     }else{ 
         WriteInfo "`t Downloading 2_AzureDeployment.ps1"
         try{
-            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/2_AzureDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\2_AzureDeployment.ps1"
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/2_AzureDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\2_AzureDeployment.ps1"
         }catch{
             WriteError "`t Failed to download 3_AzureDeployment.ps1!"
         }
     }
 
     WriteInfoHighlighted "Looking for 3_OnPremisesDeployment.ps1 script"
-    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\3_OnPremisesDeployment.ps1" ) {
+    If ( Test-Path -Path "$InstallRoot\UpdateManagement\3_OnPremisesDeployment.ps1" ) {
         WriteSuccess "`t 3_OnPremisesDeployment.ps1 is present, skipping download"
     }else{ 
         WriteInfo "`t Downloading 2_OnPremisesDeployment.ps1"
         try{
-            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/3_OnPremisesDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\3_OnPremisesDeployment.ps1"
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/3_OnPremisesDeployment.ps1 -OutFile "$InstallRoot\UpdateManagement\3_OnPremisesDeployment.ps1"
         }catch{
             WriteError "`t Failed to download 2_OnPremisesDeployment.ps1!"
         }
@@ -284,4 +281,14 @@ WriteInfoHighlighted "Azure Powershell Installation"
     Install-Module -Name Az -AllowClobber -force
 WriteInfoHighlighted "`t Powershell Help Update"
     Update-Help -Force
+#endregion
+
+
+#region finishing prereq
+
+#creating object os WScript
+$wshell = New-Object -ComObject Wscript.Shell -ErrorAction Stop
+#invoking the POP method using object
+$wshell.Popup("Please change to the Update Management Folder and edit 0_Configuration.ps1 before running 2_AzureDeployment.ps1",0,"Setup",64)
+
 #endregion

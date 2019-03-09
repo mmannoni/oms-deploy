@@ -21,26 +21,32 @@
 #>
 
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
+#region parameters
 
-Param (
-  #Script parameters go here
-)
+# Verify Running as Admin
+$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+If (!( $isAdmin )) {
+    Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
+    exit
+}
+
+#endregion
 
 #---------------------------------------------------------[Initialisations]--------------------------------------------------------
 
-#region Initializtion
-
+#region Initialisations
 
 # grab Time and start Transcript
 Start-Transcript -Path "$PSScriptRoot\3_OnPremisesDeployment.log"
 $StartDateTime = get-date
+WriteInfo "Script started at $StartDateTime"
 
+#Load Configfile....
+WriteInfo "`t Loading configuration file"
+."$PSScriptRoot\0_Configuration.ps1"
 
-#----------------------------------------------------------[Declarations]----------------------------------------------------------
-
-#Script Version
-$sScriptVersion = '1.0'
-
+#endregion
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
 
@@ -70,32 +76,14 @@ Read-Host | Out-Null
 Exit
 }
 
-
 #endregion
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
-#
-#
-WriteInfo "Script started at $StartDateTime"
-#
-#
-# Verify Running as Admin
-$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-If (!( $isAdmin )) {
-    Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
-    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
-    exit
-}
+
+#region Execution
 
 
-
-
-
-
-#region Install WSUS and Tools
-
-# Installing Windows Features
-# WSUS
+#Installing Windows Features and WSUS
 WriteInfoHighlighted "WSUS presence"
 If ( Get-WindowsFeature UpdateServices | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t WSUS is present, skipping installation"
@@ -104,7 +92,7 @@ If ( Get-WindowsFeature UpdateServices | Where-Object InstallState -EQ "Installe
     Install-WindowsFeature -Name UpdateServices, UpdateServices-WidDB, UpdateServices-Services, UpdateServices-RSAT, UpdateServices-API, UpdateServices-UI
     }
 
-#Management Tools
+#Installing Management Tools
 WriteInfoHighlighted "GPMC presence"
 If ( Get-WindowsFeature GPMC | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t GPMC is present, skipping installation"
@@ -137,4 +125,7 @@ WriteInfoHighlighted "Azure Powershell Installation"
     Install-Module -Name Az -AllowClobber -force
 WriteInfoHighlighted "Powershell Help Update"
     Update-Help -Force
+
+WriteInfoHighlighted "WSUS and Management tools installed successfully"
+
 #endregion

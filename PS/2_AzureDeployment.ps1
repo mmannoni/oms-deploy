@@ -1,27 +1,30 @@
 <#
 .SYNOPSIS
-  Azure Update Management Cloud Deployment
+	Azure Update Management Cloud Deployment
+
 .DESCRIPTION
-  Azure Update Management
-  Installation of:
-                    Log Analytics Workspace
-                    Automation Account
-              
-.PARAMETER <Parameter_Name>
-  <Brief description of parameter input required. Repeat this attribute if required>
+	Azure Update Management
+	Installation of: Log Analytics Workspace, Automation Account
+
 .INPUTS
-  0_Configuration.ps1
+	0_Configuration.ps1
+
 .OUTPUTS Log File
-  The script log file stored in C:\Temp\2_AzureDeployment.log
+	The script log file stored in C:\Temp\2_AzureDeployment.log
+
 .NOTES
-  Version:        1.0
-  Author:         Marco Mannoni
-  Creation Date:  06.03.2019
-  Purpose/Change: Initial script development
+	Version:        1.2
+	Author:         Marco Mannoni
+	Creation Date:  06.03.2019
+	Purpose/Change: Initial script development
+
+.CHANGES
+08.03.2019	Script changes
+09.03.2019	Script changes
 #>
 
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
-#
+
 # Verify Running as Admin
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 If (!( $isAdmin )) {
@@ -29,13 +32,13 @@ If (!( $isAdmin )) {
     Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
     exit
 }
-#
+
 #---------------------------------------------------------[Initialisations]--------------------------------------------------------
 
 #region Initializtion
 
 # grab Time and start Transcript
-Start-Transcript -Path "$InstallRoot\2_AzureDeployment.log"
+Start-Transcript -Path "$PSScriptRoot\2_AzureDeployment.log"
 $StartDateTime = get-date
 WriteInfo "Script started at $StartDateTime"
 
@@ -45,7 +48,6 @@ WriteInfo "`t Loading configuration file"
 
 #set TLS 1.2 for github downloads
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
 
 #endregion
 
@@ -78,11 +80,10 @@ Read-Host | Out-Null
 Exit
 }
  
-
 #endregion
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
-#
+
 #Region Azure Logon
 
 #Logon to the Azure Subscription and set the right context
@@ -92,6 +93,7 @@ $azcontext = Get-AzSubscription -SubscriptionId $configuration.TenantSubscriptio
 Set-AzContext $azcontext
 
 #endregion
+
 
 #Region Deployment
 
