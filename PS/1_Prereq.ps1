@@ -275,8 +275,7 @@ WriteInfoHighlighted "Hyper-V Tools presence"
 WriteInfoHighlighted "Azure Powershell Installation"
 	Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name Az -AllowClobber -force
-WriteInfoHighlighted "`t Powershell Help Update"
-    Update-Help -Force
+
 #endregion
 
 

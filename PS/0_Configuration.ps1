@@ -29,5 +29,6 @@ $Configuration = @{
 	OMSWorkspaceSKU = 'pernode';                                            # do not change
 	OMSWorkspaceID = '#omsworkspaceid';                                     # do not change
 	OMSWorkspaceKey ='#OMSWorkspacekey';                                    # do not change
+	OMSAgenturl = "hostname.domain.toplevel:port"
 
 }

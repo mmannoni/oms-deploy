@@ -85,7 +85,7 @@ WriteInfo "`t Loading configuration file"
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
 
-#Region Azure Logon
+#region Azure Logon
 
 #Logon to the Azure Subscription and set the right context
 WriteInfo "`t Logon to the Azure Subscription and set the right context"
@@ -96,7 +96,7 @@ Set-AzContext $azcontext
 #endregion
 
 
-#Region Deployment
+#region Deployment
 
 #Check if the RG is there, otherwise create it. 
 Get-AzResourceGroup -Name $configuration.OMSResourceGroupName -ErrorVariable notpresent -ErrorAction SilentlyContinue
@@ -125,11 +125,13 @@ $OMSWorkspaceKey = Get-AzOperationalInsightsWorkspaceSharedKeys `
                 -Name $OMSWorkspace.Name
 
 WriteInfo "`t Writing ID and key in 0_Configuration.ps1"
-(Get-Content -Path .\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#omsworkspaceid', $OMSWorkspaceID} | Set-Content -Path .\0_Configuration.ps1
-(Get-Content -Path .\0_Configuration.ps1) | ForEach-Object {$_ -Replace '##OMSWorkspacekey', $omsworkspacekey.PrimarySharedKey} | Set-Content -Path .\0_Configuration.ps1
+(Get-Content -Path $configuration.InstallRoot\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#omsworkspaceid', $OMSWorkspaceID} | Set-Content -Path $configuration.InstallRoot\0_Configuration.ps1
+(Get-Content -Path $configuration.InstallRoot\0_Configuration.ps1) | ForEach-Object {$_ -Replace '##OMSWorkspacekey', $omsworkspacekey.PrimarySharedKey} | Set-Content -Path $configuration.InstallRoot\0_Configuration.ps1
 
 #Create the Automation acccount
 WriteInfo "`t Creating Automation Account"
 New-AzAutomationAccount -ResourceGroupName $configuration.OMSResourceGroupName -Name $configuration.AutomationAccountname -Location $configuration.OMSWorkspaceLocation
 
 WriteInfoHighlighted "`t Azure setup completed successfully"
+
+#endregion
