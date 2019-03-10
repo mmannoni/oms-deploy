@@ -130,5 +130,5 @@ Add-OMSGatewayAllowedHost -host winatp-gw-weu.microsoft.com -Force
 Add-OMSGatewayAllowedHost -host winatp-gw-uks.microsoft.com -Force
 Set-OMSGatewayConfig -Name listenport -value 8282 -Force
 Restart-Service OMSGatewayService
-Get-OMSGatewayAllowedHost
 WriteSuccess "`t Microsoft OMS Gateway successfully configured"
+Start-Sleep -Seconds 5
