@@ -118,6 +118,7 @@ WriteSuccess "`t Microsoft OMS Gateway successfully installed"
 #Setting parameters in OMS Gateway
 WriteInfo "`t Configuring OMS Gateway"
 Start-Sleep -Seconds 5
+Import-Module "C:\Program Files\OMS Gateway\PowerShell\OmsGateway\OmsGateway.psd1"
 Import-Module "C:\Program Files\OMS Gateway\PowerShell\OmsGateway\OmsGateway.psm1"
 Add-OMSGatewayAllowedHost -host azurewatsonanalysis-prod.core.windows.net -Force
 Add-OMSGatewayAllowedHost -host 1ca08785-c731-4c01-a004-1f7bd57a99a8.agentsvc.azure-automation.net -Force
