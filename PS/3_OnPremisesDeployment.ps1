@@ -86,8 +86,8 @@ WriteInfo "`t Loading configuration file"
 
 #Installing MMA
 WriteInfo "`t Installing Microsoft Monitoring Agent"
-Start-Process msiexec.exe -Wait -ArgumentList '/i "$PSScriptRoot\Agents\Windows\MMA\momagent.msi" /quiet'
-
+Start-Process msiexec.exe -Wait -ArgumentList "/i $PSScriptRoot\Agents\Windows\MMA\momagent.msi AcceptEndUserLicenseAgreement=1 /quiet"
+WriteSuccess "`t Microsoft Monitoring Agent successfully installed"
 
 #Setup Azure Config in MMA
 WriteInfo "`t Configuring Microsoft Monitoring Agent"
@@ -99,31 +99,35 @@ if (!$proxyMethod)
      return
 }
 
-Write-Output "Clearing proxy settings."
 $healthServiceSettings.SetProxyInfo('', '', '')
 $mma = New-Object -ComObject 'AgentConfigManager.MgmtSvcCfg'
 $mma.AddCloudWorkspace($Configuration.omsworkspaceId, $Configuration.omsworkspaceKey)
 $mma.ReloadConfiguration()
+WriteSuccess "`t Microsoft Monitoring Agent successfully configured"
 
 #Installing Dependency Agent
 WriteInfo "`t Installing Microsoft Dependency Agent"
 Start-Process "$PSScriptRoot\Agents\Windows\InstallDependencyAgent-Windows.exe" -Wait -ArgumentList '/S'
+WriteSuccess "`t Microsoft Dependency Agent successfully installed"
 
 #Installing OMS Gateway
-WriteInfo "`t Installing OMS Gateway"
-Start-Process msiexec.exe -Wait -ArgumentList '/i "$PSScriptRoot\OMSGateway\OMS Gateway.msi" /passive'
+WriteInfo "`t Installing Microsoft OMS Gateway"
+Start-Process msiexec.exe -Wait -ArgumentList "/i $PSScriptRoot\OMSGateway\OMSGateway.msi /passive"
+WriteSuccess "`t Microsoft OMS Gateway successfully installed"
 
 #Setting parameters in OMS Gateway
 WriteInfo "`t Configuring OMS Gateway"
+Start-Sleep -Seconds 5
+Import-Module "C:\Program Files\OMS Gateway\PowerShell\OmsGateway\OmsGateway.psm1"
+Add-OMSGatewayAllowedHost -host azurewatsonanalysis-prod.core.windows.net -Force
+Add-OMSGatewayAllowedHost -host 1ca08785-c731-4c01-a004-1f7bd57a99a8.agentsvc.azure-automation.net -Force
+Add-OMSGatewayAllowedHost -host winatp-gw-cus.microsoft.com -Force
+Add-OMSGatewayAllowedHost -host winatp-gw-neu.microsoft.com -Force
+Add-OMSGatewayAllowedHost -host we-jobruntimedata-prod-su1.azure-automation.net -Force
+Add-OMSGatewayAllowedHost -host we-agentservice-prod-1.azure-automation.net -Force
+Add-OMSGatewayAllowedHost -host winatp-gw-weu.microsoft.com -Force
+Add-OMSGatewayAllowedHost -host winatp-gw-uks.microsoft.com -Force
 Set-OMSGatewayConfig -Name listenport -value 8282 -Force
-Add-OMSGatewayAllowedHost -host azurewatsonanalysis-prod.core.windows.net
-Add-OMSGatewayAllowedHost -host 1ca08785-c731-4c01-a004-1f7bd57a99a8.agentsvc.azure-automation.net
-Add-OMSGatewayAllowedHost -host winatp-gw-cus.microsoft.com
-Add-OMSGatewayAllowedHost -host winatp-gw-neu.microsoft.com
-Add-OMSGatewayAllowedHost -host we-jobruntimedata-prod-su1.azure-automation.net
-Add-OMSGatewayAllowedHost -host we-agentservice-prod-1.azure-automation.net
-Add-OMSGatewayAllowedHost -host winatp-gw-weu.microsoft.com
-Add-OMSGatewayAllowedHost -host winatp-gw-uks.microsoft.com
-
 Restart-Service OMSGatewayService
-
+Get-OMSGatewayAllowedHost
+WriteSuccess "`t Microsoft OMS Gateway successfully configured"

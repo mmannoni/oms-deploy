@@ -127,7 +127,7 @@ $OMSWorkspaceKey = Get-AzOperationalInsightsWorkspaceSharedKeys `
 WriteInfo "`t Writing ID and key in 0_Configuration.ps1"
 $path = $configuration.InstallRoot
 (Get-Content -Path $path\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#omsworkspaceid', $OMSWorkspaceID} | Set-Content -Path $path\0_Configuration.ps1
-(Get-Content -Path $path\0_Configuration.ps1) | ForEach-Object {$_ -Replace '##OMSWorkspacekey', $omsworkspacekey.PrimarySharedKey} | Set-Content -Path $path\0_Configuration.ps1
+(Get-Content -Path $path\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#OMSWorkspacekey', $omsworkspacekey.PrimarySharedKey} | Set-Content -Path $path\0_Configuration.ps1
 
 #Create the Automation acccount
 WriteInfo "`t Creating Automation Account"

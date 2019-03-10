@@ -123,7 +123,7 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\MMASetup-AMD6
 
 # Downloading OMS Gateway
 WriteInfoHighlighted "OMS Gateway presence"
-If ( Test-Path -Path "$InstallRoot\UpdateManagement\OMSGateway\OMS Gateway.msi" ) {
+If ( Test-Path -Path "$InstallRoot\UpdateManagement\OMSGateway\OMSGateway.msi" ) {
     WriteSuccess "`t OMS Gateway is present, skipping download"
 }else{ 
     WriteInfo "`t OMS Gateway not present - Downloading OMS Gateway"
@@ -137,7 +137,7 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\OMSGateway\OMS Gateway.msi" 
         $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
         $WebResponse.Close()
         $ResultsObject.'Actual URL'
-        $output = "$InstallRoot\UpdateManagement\OMSGateway\OMS Gateway.msi"
+        $output = "$InstallRoot\UpdateManagement\OMSGateway\OMSGateway.msi"
         Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
     }catch{
         WriteError "`t Failed to download OMS Gateway!"
