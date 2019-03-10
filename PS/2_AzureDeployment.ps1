@@ -76,6 +76,7 @@ WriteInfo "Script started at $StartDateTime"
 #Load Configfile....
 WriteInfo "`t Loading configuration file"
 ."$PSScriptRoot\0_Configuration.ps1"
+WriteSuccess "`t Config file successfully loaded"
 
 #set TLS 1.2 for github downloads
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -92,7 +93,7 @@ WriteInfo "`t Logon to the Azure Subscription and set the right context"
 Connect-AzAccount
 $azcontext = Get-AzSubscription -SubscriptionId $configuration.TenantSubscriptionID
 Set-AzContext $azcontext
-
+WriteSuccess "`t Azure context sucessfully set"
 #endregion
 
 
@@ -117,22 +118,26 @@ $OMSWorkspace = New-AzOperationalInsightsWorkspace `
                 -Name $configuration.OMSWorkspaceName `
                 -Location $configuration.OMSWorkspaceLocation `
                 -SKU $configuration.OMSWorkspaceSKU `
+WriteSuccess "`t OMS/Log Analytics Workspace successfully created"
 
-WriteInfo "`t Workspace created, getting workspace ID and Keys"
+WriteInfo "`t Getting workspace id and keys"
 $OMSWorkspaceID = $OMSWorkspace.CustomerId
 $OMSWorkspaceKey = Get-AzOperationalInsightsWorkspaceSharedKeys `
                 -ResourceGroupName $OMSWorkspace.ResourceGroupName `
                 -Name $OMSWorkspace.Name
+WriteSuccess "`t Got workspace id and keys"
 
-WriteInfo "`t Writing ID and key in 0_Configuration.ps1"
+WriteInfo "`t Writing id and key in 0_Configuration.ps1"
 $path = $configuration.InstallRoot
 (Get-Content -Path $path\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#omsworkspaceid', $OMSWorkspaceID} | Set-Content -Path $path\0_Configuration.ps1
 (Get-Content -Path $path\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#OMSWorkspacekey', $omsworkspacekey.PrimarySharedKey} | Set-Content -Path $path\0_Configuration.ps1
+WriteSuccess "`t Data successfully written to 0_Configuration.ps1"
 
 #Create the Automation acccount
 WriteInfo "`t Creating Automation Account"
 New-AzAutomationAccount -ResourceGroupName $configuration.OMSResourceGroupName -Name $configuration.AutomationAccountname -Location $configuration.OMSWorkspaceLocation
+WriteSuccess "`t Automation account successfully created"
 
-WriteInfoHighlighted "`t Azure setup completed successfully"
+WriteSuccess "`t Azure setup completed successfully"
 
 #endregion

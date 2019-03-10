@@ -1,23 +1,25 @@
 <#
 .SYNOPSIS
   Azure Update Management on Premises Installation Prerequisites
+
 .DESCRIPTION
   Azure Update Management on Premises Installation Prerequisites
-.PARAMETER <Parameter_Name>
-  <Brief description of parameter input required. Repeat this attribute if required>
+
 .INPUTS
-  <Inputs if any, otherwise state None>
+	0_Configuration.ps1
+
 .OUTPUTS Log File
   The script log file stored in C:\Temp\OnPremises_Prereq.log
+
 .NOTES
   Version:        1.0
   Author:         Marco Mannoni
   Creation Date:  06.03.2019
   Purpose/Change: Initial script development
-.EXAMPLE
-  <Example explanation goes here>
-  
-  <Example goes here. Repeat this attribute for more than one example>
+
+.CHANGES
+08.03.2019	Script changes
+09.03.2019	Script changes
 #>
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
@@ -78,6 +80,7 @@ WriteInfo "Script started at $StartDateTime"
 
 
 # Checking Folder Structure
+WriteInfoHighlighted "Checking folder structure"
 "UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\" | ForEach-Object {
     if (!( Test-Path "$InstallRoot\$_" )) { New-Item -Type Directory -Path "$InstallRoot\$_" } }
 
@@ -192,19 +195,7 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\InstallDepend
             WriteError "`t Failed to download 0_Configuration.ps1!"
         }
     }
-<#
-    WriteInfoHighlighted "Looking for 1_Prereq.ps1 script"
-    If ( Test-Path -Path "$InstallRoot\UpdateManagement\Scripts\1_Prereq.ps1" ) {
-        WriteSuccess "`t 1_Prereq.ps1 is present, skipping download"
-    }else{ 
-        WriteInfo "`t Downloading 1_Prereq.ps1"
-        try{
-            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/1_Prereq.ps1 -OutFile "$InstallRoot\UpdateManagement\Scripts\1_Prereq.ps1"
-        }catch{
-            WriteError "`t Failed to download 1_Prereq.ps1!"
-        }
-    }
-#>
+
     WriteInfoHighlighted "Looking for 2_AzureDeployment.ps1 script"
     If ( Test-Path -Path "$InstallRoot\UpdateManagement\2_AzureDeployment.ps1" ) {
         WriteSuccess "`t 2_AzureDeployment.ps1 is present, skipping download"
@@ -242,6 +233,7 @@ If ( Get-WindowsFeature UpdateServices | Where-Object InstallState -EQ "Installe
     WriteInfo "`t WSUS not present - Installing WSUS with default settings"
     Install-WindowsFeature -Name UpdateServices, UpdateServices-WidDB, UpdateServices-Services, UpdateServices-RSAT, UpdateServices-API, UpdateServices-UI
     }
+    WriteSuccess "`t WSUS installed successfully"
 
 #Management Tools
 WriteInfoHighlighted "GPMC presence"
@@ -251,6 +243,8 @@ If ( Get-WindowsFeature GPMC | Where-Object InstallState -EQ "Installed" ) {
     WriteInfo "`t GPMC not present - Installing GPMC with default settings"
     Install-WindowsFeature -Name GPMC
     }
+    WriteSuccess "`t GPMC installed successfully"
+
 WriteInfoHighlighted "Failover Cluster Tools presence"
 If ( Get-WindowsFeature RSAT-Clustering | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t Failover Cluster Tools are present, skipping installation"
@@ -258,6 +252,8 @@ If ( Get-WindowsFeature RSAT-Clustering | Where-Object InstallState -EQ "Install
     WriteInfo "`t Failover Cluster Tools not present - Installing Failover Cluster Tools"
     Install-WindowsFeature -Name RSAT-Clustering-Mgmt, RSAT-Clustering-Powershell
     }
+    WriteSuccess "`t Failover Cluster Tools installed successfully"
+
 WriteInfoHighlighted "AD DS and AD LDS Tools presence"
     If ( Get-WindowsFeature RSAT-AD-Tools | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t AD DS and AD LDS Tools are present, skipping installation"
@@ -265,6 +261,8 @@ WriteInfoHighlighted "AD DS and AD LDS Tools presence"
     WriteInfo "`t AD DS and AD LDS Tools not present - Installing AD DS and AD LDS Tools"
     Install-WindowsFeature -Name RSAT-AD-Tools
     }
+    WriteSuccess "`t AD DS and AD LDS Tools installed successfully"
+
 WriteInfoHighlighted "Hyper-V Tools presence"
     If ( Get-WindowsFeature RSAT-Hyper-V-Tools | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t Hyper-V Tools are present, skipping installation"
@@ -272,10 +270,14 @@ WriteInfoHighlighted "Hyper-V Tools presence"
     WriteInfo "`t Hyper-V Tools not present - Installing Hyper-V Tools"
     Install-WindowsFeature -Name RSAT-Hyper-V-Tools
     }
+	WriteSuccess "`t Hyper-V Tools installed successfully"
+
 WriteInfoHighlighted "Azure Powershell Installation"
 	Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name Az -AllowClobber -force
 	Install-Module –Name PowerShellGet –Force
+	WriteSuccess "`t Azure Powershell installed successfully"
+
 #endregion
 
 

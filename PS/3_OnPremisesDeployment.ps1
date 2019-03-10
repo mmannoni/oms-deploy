@@ -1,23 +1,25 @@
 <#
 .SYNOPSIS
-  Azure Update Management on Premises Installation Prerequisites
+  Azure Update Management on Premises Installation
+
 .DESCRIPTION
-  Azure Update Management on Premises Installation Prerequisites
-.PARAMETER <Parameter_Name>
-  <Brief description of parameter input required. Repeat this attribute if required>
+  Azure Update Management on Premises Installation
+
 .INPUTS
-  <Inputs if any, otherwise state None>
+	0_Configuration.ps1
+
 .OUTPUTS Log File
-  The script log file stored in C:\Temp\1_OnPremisesDeployment.log
+  The script log file stored in C:\Temp\3_OnPremisesDeployment.log
+
 .NOTES
   Version:        1.0
   Author:         Marco Mannoni
   Creation Date:  06.03.2019
   Purpose/Change: Initial script development
-.EXAMPLE
-  <Example explanation goes here>
-  
-  <Example goes here. Repeat this attribute for more than one example>
+
+.CHANGES
+08.03.2019	Script changes
+09.03.2019	Script changes
 #>
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
@@ -76,6 +78,7 @@ WriteInfo "Script started at $StartDateTime"
 #Load Configfile....
 WriteInfo "`t Loading configuration file"
 ."$PSScriptRoot\0_Configuration.ps1"
+WriteSuccess "`t Config file successfully loaded"
 
 #endregion
 
@@ -132,3 +135,5 @@ Set-OMSGatewayConfig -Name listenport -value 8282 -Force
 Restart-Service OMSGatewayService
 WriteSuccess "`t Microsoft OMS Gateway successfully configured"
 Start-Sleep -Seconds 5
+
+#endregion
