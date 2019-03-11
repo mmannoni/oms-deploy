@@ -89,7 +89,7 @@ WriteSuccess "`t Config file successfully loaded"
 
 #Installing MMA
 WriteInfo "`t Installing Microsoft Monitoring Agent"
-Start-Process msiexec.exe -Wait -ArgumentList "/i $PSScriptRoot\Agents\Windows\MMA\momagent.msi AcceptEndUserLicenseAgreement=1 /quiet"
+Start-Process msiexec.exe -Wait -ArgumentList "/i $InstallRoot\UpdateManagement\Agents\Windows\MMA\momagent.msi AcceptEndUserLicenseAgreement=1 /quiet"
 WriteSuccess "`t Microsoft Monitoring Agent successfully installed"
 
 #Setup Azure Config in MMA
@@ -110,12 +110,12 @@ WriteSuccess "`t Microsoft Monitoring Agent successfully configured"
 
 #Installing Dependency Agent
 WriteInfo "`t Installing Microsoft Dependency Agent"
-Start-Process "$PSScriptRoot\Agents\Windows\InstallDependencyAgent-Windows.exe" -Wait -ArgumentList '/S'
+Start-Process "$InstallRoot\UpdateManagement\Agents\Windows\InstallDependencyAgent-Windows.exe" -Wait -ArgumentList '/S'
 WriteSuccess "`t Microsoft Dependency Agent successfully installed"
 
 #Installing OMS Gateway
 WriteInfo "`t Installing Microsoft OMS Gateway"
-Start-Process msiexec.exe -Wait -ArgumentList "/i $PSScriptRoot\OMSGateway\OMSGateway.msi /passive"
+Start-Process msiexec.exe -Wait -ArgumentList "/i $InstallRoot\UpdateManagement\OMSGateway\OMSGateway.msi /passive"
 WriteSuccess "`t Microsoft OMS Gateway successfully installed"
 
 #Setting parameters in OMS Gateway
@@ -141,7 +141,8 @@ Start-Sleep -Seconds 5
 #region AD
 
 #get servers in AD
-$Servers = Get-ADComputer -Filter {(OperatingSystem -like "*windows*server*") -and (Enabled -eq "true")} -Properties OperatingSystem | Sort-Object Name
+WriteInfo "`t Looking for servers in Active Directory $configuration.MGMTDomain"
+$Servers = Get-ADComputer -Filter {(OperatingSystem -like "*windows*server*") -and (Enabled -eq "true") -and (dnshostname -notlike $mgmtfqdn)} -Properties OperatingSystem | Sort-Object Name
 $clusters = Get-ADComputer -Properties * -Filter {(OperatingSystem -like "*windows*server*") -and (Enabled -eq "true")} | Where-Object {$_.servicePrincipalNames -like '*Cluster*'}
 $ServersCleaned = @()
 ForEach ($Server in $Servers) {
@@ -149,4 +150,6 @@ ForEach ($Server in $Servers) {
         $ServersCleaned += $Server
     }
 }
-$ServersCleaned.dnshostname | Out-File c:\Temp\test.txt
+WriteInfo "`t Write list of servers to OnPremisesServer.csv"
+$ServersCleaned.dnshostname | Out-File $InstallRoot\UpdateManagement\OnPremisesServer.csv
+WriteSuccess "`t Write list of servers to OnPremisesServer.csv"
