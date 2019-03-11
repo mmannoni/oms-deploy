@@ -36,11 +36,11 @@ MGMTHost					MGMT Host FQDN, will be filled automatically - do not change
 #>
 
 $Configuration = @{
-    OMSResourceGroupName = '';
-    OMSWorkspaceName = '';
-    OMSWorkspaceLocation = '';
-    TenantSubscriptionID = '';
-    AutomationAccountname = '';
+  OMSResourceGroupName = '';
+  OMSWorkspaceName = '';
+  OMSWorkspaceLocation = '';
+  TenantSubscriptionID = '';
+  AutomationAccountname = '';
 	InstallRoot = 'C:\Sys\UpdateManagement';
 	OMSWorkspaceSKU = 'pernode';
 	OMSWorkspaceID = '#omsworkspaceid';

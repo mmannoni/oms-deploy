@@ -137,3 +137,16 @@ WriteSuccess "`t Microsoft OMS Gateway successfully configured"
 Start-Sleep -Seconds 5
 
 #endregion
+
+#region AD
+
+#get servers in AD
+$Servers = Get-ADComputer -Filter {(OperatingSystem -like "*windows*server*") -and (Enabled -eq "true")} -Properties OperatingSystem | Sort-Object Name
+$clusters = Get-ADComputer -Properties * -Filter {(OperatingSystem -like "*windows*server*") -and (Enabled -eq "true")} | Where-Object {$_.servicePrincipalNames -like '*Cluster*'}
+$ServersCleaned = @()
+ForEach ($Server in $Servers) {
+    If ($Clusters.Name -notcontains $Server.Name) {
+        $ServersCleaned += $Server
+    }
+}
+$ServersCleaned.dnshostname | Out-File c:\Temp\test.txt
