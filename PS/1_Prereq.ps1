@@ -280,6 +280,15 @@ WriteInfoHighlighted "Azure Powershell Installation"
 
 #endregion
 
+#region fill data in configuration file
+
+WriteInfo "`t Writing hostname in 0_Configuration.ps1"
+$path = $configuration.InstallRoot
+$mgmtFQDN=(Get-WmiObject win32_computersystem).DNSHostName+"."+(Get-WmiObject win32_computersystem).Domain
+(Get-Content -Path $path\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#mgmthost', $mgmtFQDN} | Set-Content -Path $path\0_Configuration.ps1
+WriteSuccess "`t Hostname successfully written to 0_Configuration.ps1"
+
+#endregion
 
 #region finishing prereq
 

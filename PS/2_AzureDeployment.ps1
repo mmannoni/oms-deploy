@@ -81,6 +81,11 @@ WriteSuccess "`t Config file successfully loaded"
 #set TLS 1.2 for github downloads
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+#Move files from first step to Update Management folder
+WriteInfo "`t Moving files from 1st step to Update Management folder"
+Move-Item -Path "C:\sys\1_Prereq.*" -Destination "C:\sys\UpdateManagement"
+WriteSuccess "`t File copied successfully"
+
 #endregion
 
 

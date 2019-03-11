@@ -29,7 +29,7 @@ InstallRoot					Root folder for installation - do not change
 OMSWorkspaceSKU				SKU of the workspace - do not change
 OMSWorkspaceID				OMS workspace id, will be filled automatically - do not change
 OMSWorkspaceKey				OMS workspace key, will be filled automatically - do not change
-
+MGMTHost					MGMT Host FQDN, will be filled automatically - do not change
 
 
 
@@ -43,8 +43,8 @@ $Configuration = @{
     AutomationAccountname = '';
 	InstallRoot = 'C:\Sys\UpdateManagement';
 	OMSWorkspaceSKU = 'pernode';
-	OMSWorkspaceID = '#omsworkspaceid';                                     # do not change
-	OMSWorkspaceKey ='#OMSWorkspacekey';                                    # do not change
-	OMSAgenturl = "hostname.domain.toplevel:port"
+	OMSWorkspaceID = '#omsworkspaceid';
+	OMSWorkspaceKey ='#OMSWorkspacekey';
+	MGMTHost = "#mgmthost";
 
 }
