@@ -132,7 +132,7 @@ Add-OMSGatewayAllowedHost -host we-jobruntimedata-prod-su1.azure-automation.net 
 Add-OMSGatewayAllowedHost -host we-agentservice-prod-1.azure-automation.net -Force
 Add-OMSGatewayAllowedHost -host winatp-gw-weu.microsoft.com -Force
 Add-OMSGatewayAllowedHost -host winatp-gw-uks.microsoft.com -Force
-Set-OMSGatewayConfig -Name listenport -value 8282 -Force
+Set-OMSGatewayConfig -Name listenport -value $configuration.OMSGWPort -Force
 Restart-Service OMSGatewayService
 WriteSuccess "`t Microsoft OMS Gateway successfully configured"
 Start-Sleep -Seconds 5
@@ -154,3 +154,9 @@ ForEach ($Server in $Servers) {
 WriteInfo "`t Write list of servers to OnPremisesServer.csv"
 $ServersCleaned.dnshostname | Out-File $configuration.InstallRoot\OnPremisesServer.csv
 WriteSuccess "`t List of servers successfully written to OnPremisesServer.csv"
+
+#endregion
+
+#region MMA
+
+#
