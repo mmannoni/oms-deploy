@@ -82,7 +82,7 @@ WriteInfo "Script started at $StartDateTime"
 
 # Checking Folder Structure
 WriteInfoHighlighted "Checking folder structure"
-"UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\","UpdateManagement\Temp\"  | ForEach-Object {
+"UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\","UpdateManagement\Temp\","UpdateManagement\AD\ADMX","UpdateManagement\AD\GPOs"    | ForEach-Object {
     if (!( Test-Path "$InitialInstallRoot\$_" )) { New-Item -Type Directory -Path "$InitialInstallRoot\$_" } }
 
 #endregion
@@ -230,6 +230,26 @@ WriteInfo "`t Extracting and installing PSEXEC"
 Expand-Archive "$InitialInstallRoot\UpdateManagement\Temp\PSTools.zip" -DestinationPath "C:\Windows\System32"
 Remove-Item -path "$InitialInstallRoot\UpdateManagement\Temp\PSTools.zip"
 WriteSuccess "`t PSEXEC installed successfully"
+
+# Download and install ADMX templates
+$admxurl = "https://www.microsoft.com/en-us/download/confirmation.aspx?id=57576"
+$admxout = "$InitialInstallRoot\UpdateManagement\AD\ADMX\Administrative Templates (.admx) for Windows 10 October 2018 Update.msi"
+    WriteInfoHighlighted "Looking for ADMX 10.2018 templates"
+    If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\AD\ADMX\Administrative Templates (.admx) for Windows 10 October 2018 Update.msi" ) {
+        WriteSuccess "`t ADMX templates present, skipping download"
+    }else{ 
+        WriteInfo "`t Downloading ADMX templates"
+        try{
+            Start-BitsTransfer -Source $admxurl -Destination $admxout
+        }catch{
+            WriteError "`t Failed to download ADMX templates!"
+        }
+    }
+WriteInfo "`t Extracting ADMX templates"
+Start-Process msiexec.exe -Wait -ArgumentList "/i $InitialInstallRoot\UpdateManagement\AD\ADMX\Administrative Templates (.admx) for Windows 10 October 2018 Update.msi /passive"
+Copy-Item "C:\Program Files (x86)\Microsoft Group Policy\Windows 10 October 2018 Update (1809) v2\*" -Destination "$InitialInstallRoot\UpdateManagement\AD\ADMX\" -Recurse
+Remove-Item "$InitialInstallRoot\UpdateManagement\AD\ADMX\Administrative Templates (.admx) for Windows 10 October 2018 Update.msi"
+WriteSuccess "`t ADMX templates extracted sucessfully"
 
 #endregion
 
