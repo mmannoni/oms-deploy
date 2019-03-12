@@ -90,7 +90,7 @@ WriteSuccess "`t Config file successfully loaded"
 
 #Installing MMA
 WriteInfo "`t Installing Microsoft Monitoring Agent"
-Start-Process msiexec.exe -Wait -ArgumentList "/i $InstallRoot\UpdateManagement\Agents\Windows\MMA\momagent.msi AcceptEndUserLicenseAgreement=1 /quiet"
+Start-Process msiexec.exe -Wait -ArgumentList "/i $configuration.InstallRoot\Agents\Windows\MMA\momagent.msi AcceptEndUserLicenseAgreement=1 /quiet"
 WriteSuccess "`t Microsoft Monitoring Agent successfully installed"
 
 #Setup Azure Config in MMA
@@ -111,12 +111,12 @@ WriteSuccess "`t Microsoft Monitoring Agent successfully configured"
 
 #Installing Dependency Agent
 WriteInfo "`t Installing Microsoft Dependency Agent"
-Start-Process "$InstallRoot\UpdateManagement\Agents\Windows\InstallDependencyAgent-Windows.exe" -Wait -ArgumentList '/S'
+Start-Process "$configuration.InstallRoot\Agents\Windows\InstallDependencyAgent-Windows.exe" -Wait -ArgumentList '/S'
 WriteSuccess "`t Microsoft Dependency Agent successfully installed"
 
 #Installing OMS Gateway
 WriteInfo "`t Installing Microsoft OMS Gateway"
-Start-Process msiexec.exe -Wait -ArgumentList "/i $InstallRoot\UpdateManagement\OMSGateway\OMSGateway.msi /passive"
+Start-Process msiexec.exe -Wait -ArgumentList "/i $configuration.InstallRoot\OMSGateway\OMSGateway.msi /passive"
 WriteSuccess "`t Microsoft OMS Gateway successfully installed"
 
 #Setting parameters in OMS Gateway
@@ -152,5 +152,5 @@ ForEach ($Server in $Servers) {
     }
 }
 WriteInfo "`t Write list of servers to OnPremisesServer.csv"
-$ServersCleaned.dnshostname | Out-File $InstallRoot\UpdateManagement\OnPremisesServer.csv
+$ServersCleaned.dnshostname | Out-File $configuration.InstallRoot\OnPremisesServer.csv
 WriteSuccess "`t List of servers successfully written to OnPremisesServer.csv"

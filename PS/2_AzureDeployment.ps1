@@ -83,7 +83,7 @@ WriteSuccess "`t Config file successfully loaded"
 
 #Move files from first step to Update Management folder
 WriteInfo "`t Moving files from 1st step to Update Management folder"
-Move-Item -Path "C:\sys\1_Prereq.*" -Destination "C:\sys\UpdateManagement"
+Move-Item -Path "$InitialInstallRoot\1_Prereq.*" -Destination "$configuration.InstallRoot"
 WriteSuccess "`t File copied successfully"
 
 #endregion
@@ -133,9 +133,8 @@ $OMSWorkspaceKey = Get-AzOperationalInsightsWorkspaceSharedKeys `
 WriteSuccess "`t Got workspace id and keys"
 
 WriteInfo "`t Writing id and key in 0_Configuration.ps1"
-$path = $configuration.InstallRoot
-(Get-Content -Path $path\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#omsworkspaceid', $OMSWorkspaceID} | Set-Content -Path $path\0_Configuration.ps1
-(Get-Content -Path $path\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#OMSWorkspacekey', $omsworkspacekey.PrimarySharedKey} | Set-Content -Path $path\0_Configuration.ps1
+(Get-Content -Path $configuration.InstallRoot\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#omsworkspaceid', $OMSWorkspaceID} | Set-Content -Path $configuration.InstallRoot\0_Configuration.ps1
+(Get-Content -Path $configuration.InstallRoot\0_Configuration.ps1) | ForEach-Object {$_ -Replace '#OMSWorkspacekey', $omsworkspacekey.PrimarySharedKey} | Set-Content -Path $configuration.InstallRoot\0_Configuration.ps1
 WriteSuccess "`t Data successfully written to 0_Configuration.ps1"
 
 #Create the Automation acccount
