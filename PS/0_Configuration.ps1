@@ -26,6 +26,7 @@ OMSWorkspaceName			Name of the OMS workspace
 OMSWorkspaceLocation		Location, usually westeurope
 TenantSubscriptionID		Subscription ID from the Azure portal
 AutomationAccountname		Name of the automation account
+OMSGWPort					Port on which the OMS gateway answers - usually no need to change
 InstallRoot					Root folder for installation - do not change
 OMSWorkspaceSKU				SKU of the workspace - do not change
 OMSWorkspaceID				OMS workspace id, will be filled automatically - do not change
@@ -42,6 +43,7 @@ $Configuration = @{
 	OMSWorkspaceLocation = '';
 	TenantSubscriptionID = '';
 	AutomationAccountname = '';
+	OMSGWPort = '8282';
 	InstallRoot = 'C:\Sys\UpdateManagement';
 	OMSWorkspaceSKU = 'pernode';
 	OMSWorkspaceID = '#omsworkspaceid';
