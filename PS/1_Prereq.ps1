@@ -20,6 +20,7 @@
 .CHANGES
 08.03.2019	Script changes
 09.03.2019	Script changes
+12.03.2019	Script changes
 #>
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
@@ -81,7 +82,7 @@ WriteInfo "Script started at $StartDateTime"
 
 # Checking Folder Structure
 WriteInfoHighlighted "Checking folder structure"
-"UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\" | ForEach-Object {
+"UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\","UpdateManagement\Temp\"  | ForEach-Object {
     if (!( Test-Path "$InstallRoot\$_" )) { New-Item -Type Directory -Path "$InstallRoot\$_" } }
 
 #endregion
@@ -219,6 +220,16 @@ If ( Test-Path -Path "$InstallRoot\UpdateManagement\Agents\Windows\InstallDepend
             WriteError "`t Failed to download 2_OnPremisesDeployment.ps1!"
         }
     }
+
+# Download, unzip and install PSEXEC
+WriteInfo "`t Downloading PSEXEC"
+$psexecurl = "https://download.sysinternals.com/files/PSTools.zip"
+$psexecout = "$InstallRoot\UpdateManagement\Temp\PSTools.zip"
+Start-BitsTransfer -Source $psexecurl -Destination $psexecout
+WriteInfo "`t Extracting and installing PSEXEC"
+Expand-Archive "$InstallRoot\UpdateManagement\Temp\PSTools.zip" -DestinationPath "C:\Windows\System32"
+Remove-Item -path "$InstallRoot\UpdateManagement\Temp\PSTools.zip"
+WriteSuccess "`t PSEXEC installed successfully"
 
 #endregion
 

@@ -20,6 +20,7 @@
 .CHANGES
 08.03.2019	Script changes
 09.03.2019	Script changes
+12.03.2019	Script changes
 #>
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
@@ -152,4 +153,4 @@ ForEach ($Server in $Servers) {
 }
 WriteInfo "`t Write list of servers to OnPremisesServer.csv"
 $ServersCleaned.dnshostname | Out-File $InstallRoot\UpdateManagement\OnPremisesServer.csv
-WriteSuccess "`t Write list of servers to OnPremisesServer.csv"
+WriteSuccess "`t List of servers successfully written to OnPremisesServer.csv"
