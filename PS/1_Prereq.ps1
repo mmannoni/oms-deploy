@@ -53,13 +53,12 @@ Exit
 
 #endregion
 
-
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
 # Verify Running as Admin
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 If (!( $isAdmin )) {
     Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
-    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     exit
 }
 
@@ -69,16 +68,13 @@ $InitialInstallRoot = 'C:\Sys\'
 
 #region Initializtion
 
-
 # grab Time and start Transcript
 Start-Transcript -Path "$InitialInstallRoot\1_Prereq.log"
 $StartDateTime = get-date
 WriteInfo "Script started at $StartDateTime"
 
-
 #set TLS 1.2 for github downloads
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
 
 # Checking Folder Structure
 WriteInfoHighlighted "Checking folder structure"
@@ -87,9 +83,7 @@ WriteInfoHighlighted "Checking folder structure"
 
 #endregion
 
-
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
-
 
 #region Download Software & Scripts
 
@@ -97,10 +91,10 @@ WriteInfoHighlighted "Checking folder structure"
 WriteInfoHighlighted "Windows Agent presence"
 If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Windows\MMASetup-AMD64.exe" ) {
     WriteSuccess "`t Windows Agent is present, skipping download"
-}else{ 
+}else{
     WriteInfo "`t Windows Agent not present - Downloading Windows Agent"
     try {
-        $url = 'https://go.microsoft.com/fwlink/?LinkId=828603'    
+        $url = 'https://go.microsoft.com/fwlink/?LinkId=828603'
         $WebRequest = [System.Net.WebRequest]::create($URL)
         $WebResponse = $WebRequest.GetResponse()
         $ActualDownloadURL = $WebResponse.ResponseUri.AbsoluteUri
@@ -115,7 +109,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Windows\MMASet
         WriteError "`t Failed to download Windows Agent!"
     }
     # Extracting Windows Agent
-    
+
         $Command = "$InitialInstallRoot\UpdateManagement\Agents\Windows\MMASetup-AMD64.exe"
         $Parameter = "/Q /T:$InitialInstallRoot\UpdateManagement\Agents\Windows\MMA /C"
         $Prms = $Parameter.Split("")
@@ -129,7 +123,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Windows\MMASet
 WriteInfoHighlighted "OMS Gateway presence"
 If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\OMSGateway\OMSGateway.msi" ) {
     WriteSuccess "`t OMS Gateway is present, skipping download"
-}else{ 
+}else{
     WriteInfo "`t OMS Gateway not present - Downloading OMS Gateway"
     try {
         $url = 'https://go.microsoft.com/fwlink/?linkid=837444'
@@ -152,7 +146,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\OMSGateway\OMSGateway
 WriteInfoHighlighted "WMF 5.1 for W2K12"
 If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\W2K12-KB3191565-x64.msu" ) {
     WriteSuccess "`t WMF 5.1 for W2K12 is present, skipping download"
-}else{ 
+}else{
     WriteInfo "`t WMF 5.1 for W2K12 not present - Downloading WMF 5.1 for W2K12"
     try {
         $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
@@ -174,7 +168,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\W2K12-KB3191565-x
 WriteInfoHighlighted "WMF 5.1 for W7 & W2K8R2"
 If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win7AndW2K8R2-KB3191566-x64.zip" ) {
     WriteSuccess "`t WMF 5.1 for W7 & W2K8R2 is present, skipping download"
-}else{ 
+}else{
     WriteInfo "`t WMF 5.1 for W7 & W2K8R2 not present - Downloading WMF 5.1 for W7 & W2K8R2"
     try {
         $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
@@ -196,7 +190,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win7AndW2K8R2-KB3
 WriteInfoHighlighted "WMF 5.1 for W7x86"
 If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win7-KB3191566-x86.zip" ) {
     WriteSuccess "`t WMF 5.1 for W7x86 is present, skipping download"
-}else{ 
+}else{
     WriteInfo "`t WMF 5.1 for W7x86 not present - Downloading WMF 5.1 for W7x86"
     try {
         $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
@@ -218,7 +212,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win7-KB3191566-x8
 WriteInfoHighlighted "WMF 5.1 for W8.1 & W2K12R2"
 If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win8.1AndW2K12R2-KB3191564-x64.msu" ) {
     WriteSuccess "`t WMF 5.1 for W8.1 & W2K12R2 is present, skipping download"
-}else{ 
+}else{
     WriteInfo "`t WMF 5.1 for W8.1 & W2K12R2 not present - Downloading WMF 5.1 for W8.1 & W2K12R2"
     try {
         $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
@@ -240,7 +234,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win8.1AndW2K12R2-
 WriteInfoHighlighted "WMF 5.1 for W8.1x86"
 If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win8.1-KB3191564-x86.msu" ) {
     WriteSuccess "`t WMF 5.1 for W8.1x86 is present, skipping download"
-}else{ 
+}else{
     WriteInfo "`t WMF 5.1 for W8.1x86 not present - Downloading WMF 5.1 for W8.1x86"
     try {
         $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
@@ -259,12 +253,11 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win8.1-KB3191564-
     }
 }
 
-
 # Downloading Dependency Agent Windows
 WriteInfoHighlighted "Dependency Agent Windows presence"
 If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Windows\InstallDependencyAgent-Windows.exe" ) {
     WriteSuccess "`t Dependency Agent Windows is present, skipping download"
-}else{ 
+}else{
     WriteInfo "`t Dependency Agent Windows not present - Downloading Dependency Agent"
     try {
         $url = 'https://aka.ms/dependencyagentwindows'
@@ -287,7 +280,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Windows\Instal
     WriteInfoHighlighted "Looking for Linux guide"
     If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Linux\README.md" ) {
         WriteSuccess "`t Linux guide is present, skipping download"
-    }else{ 
+    }else{
         WriteInfo "`t Downloading Linux guide"
         try{
             Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/README.md -OutFile "$InstallRoot\UpdateManagement\Agents\Linux\README.txt"
@@ -300,7 +293,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Windows\Instal
     WriteInfoHighlighted "Looking for 0_Configuration.ps1 script"
     If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\0_Configuration.ps1" ) {
         WriteSuccess "`t 0_Configuration.ps1 is present, skipping download"
-    }else{ 
+    }else{
         WriteInfo "`t Downloading 0_Configuration.ps1"
         try{
             Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/0_Configuration.ps1 -OutFile "$InitialInstallRoot\UpdateManagement\0_Configuration.ps1"
@@ -312,7 +305,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Windows\Instal
     WriteInfoHighlighted "Looking for 2_AzureDeployment.ps1 script"
     If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\2_AzureDeployment.ps1" ) {
         WriteSuccess "`t 2_AzureDeployment.ps1 is present, skipping download"
-    }else{ 
+    }else{
         WriteInfo "`t Downloading 2_AzureDeployment.ps1"
         try{
             Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/2_AzureDeployment.ps1 -OutFile "$InitialInstallRoot\UpdateManagement\2_AzureDeployment.ps1"
@@ -324,7 +317,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Windows\Instal
     WriteInfoHighlighted "Looking for 3_OnPremisesDeployment.ps1 script"
     If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\3_OnPremisesDeployment.ps1" ) {
         WriteSuccess "`t 3_OnPremisesDeployment.ps1 is present, skipping download"
-    }else{ 
+    }else{
         WriteInfo "`t Downloading 2_OnPremisesDeployment.ps1"
         try{
             Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/mmannoni/oms-deploy/master/PS/3_OnPremisesDeployment.ps1 -OutFile "$InitialInstallRoot\UpdateManagement\3_OnPremisesDeployment.ps1"
@@ -349,7 +342,7 @@ $admxout = "$InitialInstallRoot\UpdateManagement\AD\ADMX\Administrative Template
     WriteInfoHighlighted "Looking for ADMX 10.2018 templates"
     If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\AD\ADMX\Administrative Templates (.admx) for Windows 10 October 2018 Update.msi" ) {
         WriteSuccess "`t ADMX templates present, skipping download"
-    }else{ 
+    }else{
         WriteInfo "`t Downloading ADMX templates"
         try{
             Start-BitsTransfer -Source $admxurl -Destination $admxout
@@ -372,7 +365,7 @@ WriteSuccess "`t ADMX templates extracted sucessfully"
 WriteInfoHighlighted "WSUS presence"
 If ( Get-WindowsFeature UpdateServices | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t WSUS is present, skipping installation"
-}else{ 
+}else{
     WriteInfo "`t WSUS not present - Installing WSUS with default settings"
     Install-WindowsFeature -Name UpdateServices, UpdateServices-WidDB, UpdateServices-Services, UpdateServices-RSAT, UpdateServices-API, UpdateServices-UI
     }
@@ -382,7 +375,7 @@ If ( Get-WindowsFeature UpdateServices | Where-Object InstallState -EQ "Installe
 WriteInfoHighlighted "GPMC presence"
 If ( Get-WindowsFeature GPMC | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t GPMC is present, skipping installation"
-}else{ 
+}else{
     WriteInfo "`t GPMC not present - Installing GPMC with default settings"
     Install-WindowsFeature -Name GPMC
     }
@@ -391,7 +384,7 @@ If ( Get-WindowsFeature GPMC | Where-Object InstallState -EQ "Installed" ) {
 WriteInfoHighlighted "Failover Cluster Tools presence"
 If ( Get-WindowsFeature RSAT-Clustering | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t Failover Cluster Tools are present, skipping installation"
-    }else{ 
+    }else{
     WriteInfo "`t Failover Cluster Tools not present - Installing Failover Cluster Tools"
     Install-WindowsFeature -Name RSAT-Clustering-Mgmt, RSAT-Clustering-Powershell
     }
@@ -400,7 +393,7 @@ If ( Get-WindowsFeature RSAT-Clustering | Where-Object InstallState -EQ "Install
 WriteInfoHighlighted "AD DS and AD LDS Tools presence"
     If ( Get-WindowsFeature RSAT-AD-Tools | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t AD DS and AD LDS Tools are present, skipping installation"
-    }else{ 
+    }else{
     WriteInfo "`t AD DS and AD LDS Tools not present - Installing AD DS and AD LDS Tools"
     Install-WindowsFeature -Name RSAT-AD-Tools
     }
@@ -409,7 +402,7 @@ WriteInfoHighlighted "AD DS and AD LDS Tools presence"
 WriteInfoHighlighted "Hyper-V Tools presence"
     If ( Get-WindowsFeature RSAT-Hyper-V-Tools | Where-Object InstallState -EQ "Installed" ) {
     WriteSuccess "`t Hyper-V Tools are present, skipping installation"
-    }else{ 
+    }else{
     WriteInfo "`t Hyper-V Tools not present - Installing Hyper-V Tools"
     Install-WindowsFeature -Name RSAT-Hyper-V-Tools
     }
