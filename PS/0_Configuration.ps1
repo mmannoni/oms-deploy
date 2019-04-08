@@ -3,7 +3,7 @@
   Azure Update Management Cloud Deployment
 .DESCRIPTION
   Parameters File
-              
+
 .NOTES
   Version:        1.1
   Author:         Marco Mannoni
@@ -38,7 +38,6 @@ OMSWorkspaceKey				OMS workspace key, will be filled automatically - do not chan
 MGMTHost					MGMT Host FQDN, will be filled automatically - do not change
 MGMTDomain					MGMT Domain, will be filled automatically - do not change
 
-
 #>
 
 $Configuration = @{
@@ -54,5 +53,4 @@ $Configuration = @{
 	OMSWorkspaceKey ='#OMSWorkspacekey';
 	MGMTHost = "#mgmthost";
 	MGMTDomain = "#mgmtdomain";
-
 }

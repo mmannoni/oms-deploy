@@ -53,14 +53,13 @@ Exit
 
 #endregion
 
-
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
 
 # Verify Running as Admin
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 If (!( $isAdmin )) {
     Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
-    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     exit
 }
 
@@ -88,7 +87,6 @@ WriteSuccess "`t File copied successfully"
 
 #endregion
 
-
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
 
 #region Azure Logon
@@ -101,10 +99,9 @@ Set-AzContext $azcontext
 WriteSuccess "`t Azure context sucessfully set"
 #endregion
 
-
 #region Deployment
 
-#Check if the RG is there, otherwise create it. 
+#Check if the RG is there, otherwise create it.
 Get-AzResourceGroup -Name $configuration.OMSResourceGroupName -ErrorVariable notpresent -ErrorAction SilentlyContinue
 if ($notPresent)
 {

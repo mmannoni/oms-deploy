@@ -53,7 +53,6 @@ Exit
 
 #endregion
 
-
 #---------------------------------------------------------[Script Parameters]------------------------------------------------------
 #region parameters
 
@@ -61,7 +60,7 @@ Exit
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 If (!( $isAdmin )) {
     Write-Host "-- Restarting as Administrator" -ForegroundColor Cyan ; Start-Sleep -Seconds 1
-    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs 
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     exit
 }
 
@@ -82,7 +81,6 @@ WriteInfo "`t Loading configuration file"
 WriteSuccess "`t Config file successfully loaded"
 
 #endregion
-
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
 
