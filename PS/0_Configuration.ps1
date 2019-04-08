@@ -13,6 +13,7 @@
 .CHANGES
 09.03.2019	Script changes
 12.03.2019	Script changes
+08.04.2019	Script changes
 
 #>
 
@@ -21,18 +22,21 @@
 # Don't change values marked with "do not change"!
 
 <#
-OMSResourceGroupName		Name of the resource group on which OMS will deploy
+OMSResourceGroupName		Name of the resource group, on which OMS will deploy
 OMSWorkspaceName			Name of the OMS workspace
 OMSWorkspaceLocation		Location, usually westeurope
 TenantSubscriptionID		Subscription ID from the Azure portal
 AutomationAccountname		Name of the automation account
+
+------------------------------------------------------------------------------------------------
+
 OMSGWPort					Port on which the OMS gateway answers - usually no need to change
 InstallRoot					Root folder for installation - do not change
 OMSWorkspaceSKU				SKU of the workspace - do not change
 OMSWorkspaceID				OMS workspace id, will be filled automatically - do not change
 OMSWorkspaceKey				OMS workspace key, will be filled automatically - do not change
 MGMTHost					MGMT Host FQDN, will be filled automatically - do not change
-
+MGMTDomain					MGMT Domain, will be filled automatically - do not change
 
 
 #>
