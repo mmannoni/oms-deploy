@@ -82,7 +82,7 @@ WriteInfo "Script started at $StartDateTime"
 
 # Checking Folder Structure
 WriteInfoHighlighted "Checking folder structure"
-"UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\","UpdateManagement\Temp\","UpdateManagement\AD\ADMX","UpdateManagement\AD\GPOs"    | ForEach-Object {
+"UpdateManagement\Agents\Windows","UpdateManagement\Agents\Linux","UpdateManagement\OMSGateway\","UpdateManagement\Temp\","UpdateManagement\AD\ADMX","UpdateManagement\AD\GPOs","UpdateManagement\WMF"    | ForEach-Object {
     if (!( Test-Path "$InitialInstallRoot\$_" )) { New-Item -Type Directory -Path "$InitialInstallRoot\$_" } }
 
 #endregion
@@ -147,6 +147,118 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\OMSGateway\OMSGateway
         WriteError "`t Failed to download OMS Gateway!"
     }
 }
+
+# Downloading WMF 5.1
+WriteInfoHighlighted "WMF 5.1 for W2K12"
+If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\W2K12-KB3191565-x64.msu" ) {
+    WriteSuccess "`t WMF 5.1 for W2K12 is present, skipping download"
+}else{ 
+    WriteInfo "`t WMF 5.1 for W2K12 not present - Downloading WMF 5.1 for W2K12"
+    try {
+        $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
+        $WebRequest = [System.Net.WebRequest]::create($URL)
+        $WebResponse = $WebRequest.GetResponse()
+        $ActualDownloadURL = $WebResponse.ResponseUri.AbsoluteUri
+        $ObjectProperties = @{ 'Shortened URL' = $URL;
+                       'Actual URL' = $ActualDownloadURL}
+        $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
+        $WebResponse.Close()
+        $ResultsObject.'Actual URL'
+        $output = "$InitialInstallRoot\UpdateManagement\WMF\W2K12-KB3191565-x64.msu"
+        Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
+    }catch{
+        WriteError "`t Failed to download WMF 5.1 for W2K12!"
+    }
+}
+
+WriteInfoHighlighted "WMF 5.1 for W7 & W2K8R2"
+If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win7AndW2K8R2-KB3191566-x64.zip" ) {
+    WriteSuccess "`t WMF 5.1 for W7 & W2K8R2 is present, skipping download"
+}else{ 
+    WriteInfo "`t WMF 5.1 for W7 & W2K8R2 not present - Downloading WMF 5.1 for W7 & W2K8R2"
+    try {
+        $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
+        $WebRequest = [System.Net.WebRequest]::create($URL)
+        $WebResponse = $WebRequest.GetResponse()
+        $ActualDownloadURL = $WebResponse.ResponseUri.AbsoluteUri
+        $ObjectProperties = @{ 'Shortened URL' = $URL;
+                       'Actual URL' = $ActualDownloadURL}
+        $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
+        $WebResponse.Close()
+        $ResultsObject.'Actual URL'
+        $output = "$InitialInstallRoot\UpdateManagement\WMF\Win7AndW2K8R2-KB3191566-x64.zip"
+        Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
+    }catch{
+        WriteError "`t Failed to download WMF 5.1 for W7 & W2K8R2!"
+    }
+}
+
+WriteInfoHighlighted "WMF 5.1 for W7x86"
+If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win7-KB3191566-x86.zip" ) {
+    WriteSuccess "`t WMF 5.1 for W7x86 is present, skipping download"
+}else{ 
+    WriteInfo "`t WMF 5.1 for W7x86 not present - Downloading WMF 5.1 for W7x86"
+    try {
+        $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
+        $WebRequest = [System.Net.WebRequest]::create($URL)
+        $WebResponse = $WebRequest.GetResponse()
+        $ActualDownloadURL = $WebResponse.ResponseUri.AbsoluteUri
+        $ObjectProperties = @{ 'Shortened URL' = $URL;
+                       'Actual URL' = $ActualDownloadURL}
+        $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
+        $WebResponse.Close()
+        $ResultsObject.'Actual URL'
+        $output = "$InitialInstallRoot\UpdateManagement\WMF\Win7-KB3191566-x86.zip"
+        Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
+    }catch{
+        WriteError "`t Failed to download WMF 5.1 for W7x86!"
+    }
+}
+
+WriteInfoHighlighted "WMF 5.1 for W8.1 & W2K12R2"
+If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win8.1AndW2K12R2-KB3191564-x64.msu" ) {
+    WriteSuccess "`t WMF 5.1 for W8.1 & W2K12R2 is present, skipping download"
+}else{ 
+    WriteInfo "`t WMF 5.1 for W8.1 & W2K12R2 not present - Downloading WMF 5.1 for W8.1 & W2K12R2"
+    try {
+        $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
+        $WebRequest = [System.Net.WebRequest]::create($URL)
+        $WebResponse = $WebRequest.GetResponse()
+        $ActualDownloadURL = $WebResponse.ResponseUri.AbsoluteUri
+        $ObjectProperties = @{ 'Shortened URL' = $URL;
+                       'Actual URL' = $ActualDownloadURL}
+        $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
+        $WebResponse.Close()
+        $ResultsObject.'Actual URL'
+        $output = "$InitialInstallRoot\UpdateManagement\WMF\Win8.1AndW2K12R2-KB3191564-x64.msu"
+        Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
+    }catch{
+        WriteError "`t Failed to download WMF 5.1 for W8.1 & W2K12R2!"
+    }
+}
+
+WriteInfoHighlighted "WMF 5.1 for W8.1x86"
+If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\WMF\Win8.1-KB3191564-x86.msu" ) {
+    WriteSuccess "`t WMF 5.1 for W8.1x86 is present, skipping download"
+}else{ 
+    WriteInfo "`t WMF 5.1 for W8.1x86 not present - Downloading WMF 5.1 for W8.1x86"
+    try {
+        $url = 'https://www.microsoft.com/en-us/download/details.aspx?id=54616'
+        $WebRequest = [System.Net.WebRequest]::create($URL)
+        $WebResponse = $WebRequest.GetResponse()
+        $ActualDownloadURL = $WebResponse.ResponseUri.AbsoluteUri
+        $ObjectProperties = @{ 'Shortened URL' = $URL;
+                       'Actual URL' = $ActualDownloadURL}
+        $ResultsObject = New-Object -TypeName PSObject -Property $ObjectProperties
+        $WebResponse.Close()
+        $ResultsObject.'Actual URL'
+        $output = "$InitialInstallRoot\UpdateManagement\WMF\Win8.1-KB3191564-x86.msu"
+        Start-BitsTransfer -Source $ActualDownloadURL -Destination $output
+    }catch{
+        WriteError "`t Failed to download WMF 5.1 for W8.1x86!"
+    }
+}
+
 
 # Downloading Dependency Agent Windows
 WriteInfoHighlighted "Dependency Agent Windows presence"
