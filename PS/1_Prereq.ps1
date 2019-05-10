@@ -284,7 +284,7 @@ If ( Test-Path -Path "$InitialInstallRoot\UpdateManagement\Agents\Windows\Instal
     }else{
         WriteInfo "`t Downloading Linux guide"
         try{
-            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/README.md -OutFile "$InstallRoot\UpdateManagement\Agents\Linux\README.txt"
+            Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/README.md -OutFile "$InitialInstallRoot\UpdateManagement\Agents\Linux\README.txt"
         }catch{
             WriteError "`t Failed to Linux guide!"
         }
