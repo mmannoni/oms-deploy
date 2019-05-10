@@ -333,7 +333,7 @@ $psexecurl = "https://download.sysinternals.com/files/PSTools.zip"
 $psexecout = "$InitialInstallRoot\UpdateManagement\Temp\PSTools.zip"
 Start-BitsTransfer -Source $psexecurl -Destination $psexecout
 WriteInfo "`t Extracting and installing PSEXEC"
-Expand-Archive "$InitialInstallRoot\UpdateManagement\Temp\PSTools.zip" -DestinationPath "C:\Windows\System32"
+Expand-Archive "$InitialInstallRoot\UpdateManagement\Temp\PSTools.zip" -DestinationPath "C:\Windows\System32" -Force
 Remove-Item -path "$InitialInstallRoot\UpdateManagement\Temp\PSTools.zip"
 WriteSuccess "`t PSEXEC installed successfully"
 
